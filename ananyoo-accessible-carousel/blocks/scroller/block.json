@@ -1,0 +1,30 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "anacb/scroller",
+	"version": "2.5.6",
+	"title": "Accessible Card Scroller",
+	"category": "ananyoo-accessible",
+	"icon": "slides",
+	"description": "An accessible, native scroll-snap row of cards. No autoplay, nothing hidden from assistive tech, and \"cards per view\" is pure CSS — keyboard, touch and screen readers work by default.",
+	"keywords": [ "scroller", "carousel", "cards", "slider", "accessible" ],
+	"textdomain": "ananyoo-accessible-carousel",
+	"supports": {
+		"html": false,
+		"anchor": true,
+		"align": [ "wide", "full" ],
+		"color": { "background": true, "text": false },
+		"spacing": { "padding": true, "margin": true }
+	},
+	"attributes": {
+		"label":      { "type": "string",  "default": "" },
+		"perView":    { "type": "number",  "default": 3 },
+		"gap":        { "type": "number",  "default": 24 },
+		"showArrows": { "type": "boolean", "default": true }
+	},
+	"editorScript": "aac-editor",
+	"editorStyle":  "aac-editor-style",
+	"style":        "aac-scroller-style",
+	"viewScript":   "aac-scroller-view",
+	"render":       "file:./render.php"
+}

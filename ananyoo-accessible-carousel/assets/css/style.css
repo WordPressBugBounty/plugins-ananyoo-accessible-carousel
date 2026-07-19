@@ -1,0 +1,608 @@
+/**
+ * Ananyoo Accessible Carousel — shared / front-end styles.
+ *
+ * Layout model (matches the approved design):
+ *   - The carousel is a CONTAINED, centered card with rounded corners and a
+ *     soft shadow (not full-bleed).
+ *   - The slide image sits at the top; a full-width semi-transparent text bar
+ *     overlays the bottom of the image (heading + paragraph, left aligned).
+ *   - A navigation bar sits BELOW the image inside the card: large outlined
+ *     arrow buttons (left), pagination dots (center), and a Pause/Play button
+ *     with icon + text label (right).
+ *
+ * No-JS: every slide displays in normal flow as a readable list.
+ */
+
+.aac-carousel {
+	--aac-fg: #1a1a1a;
+	--aac-muted: #6b6b6b;
+	--aac-line: #6b6b6b;
+	--aac-accent: #b8541a;
+	--aac-focus: #1a73e8;
+	--aac-bar-bg: rgba( 30, 28, 34, 0.82 );
+	--aac-bar-fg: #ffffff;
+	/* Card panel background. Light grey by default; overlay layout clears it. */
+	--aac-card-bg: #cccccc;
+	/* Default slide height. Overridable via the block's Slide height field. */
+	--aac-min-height: 26rem;
+	/* No width cap by default: the carousel fills its container. Set a value
+	   in the block's Maximum width field to constrain it. */
+	--aac-max-width: 100%;
+
+	width: 100%;
+	max-width: var( --aac-max-width );
+	margin-inline: auto;
+	margin-block: 1.5rem;      /* modest default gap */
+	padding: 0.75rem;
+	background: var( --aac-card-bg );
+	border-radius: 16px;
+	box-shadow: 0 10px 30px rgba( 0, 0, 0, 0.10 );
+	box-sizing: border-box;
+}
+
+.aac-carousel.alignfull,
+.aac-carousel.alignwide { margin-inline: auto; }
+
+.aac-carousel__track {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	border-radius: 12px;
+	overflow: hidden;
+}
+
+/* Slide ---------------------------------------------------------------- */
+.aac-slide {
+	position: relative;
+	display: flex;
+	align-items: flex-end;
+	min-height: var( --aac-min-height );
+	overflow: hidden;
+	box-sizing: border-box;
+}
+
+.aac-slide__bg {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	z-index: 0;
+}
+
+/* Full-width text bar over the bottom of the image -------------------- */
+.aac-slide__box {
+	position: relative;
+	z-index: 1;
+	width: 100%;
+	margin: 0;
+	padding: 1.1rem 1.5rem;
+	background: var( --aac-bar-bg );
+	color: var( --aac-bar-fg );
+	box-sizing: border-box;
+	text-align: left;
+}
+
+.aac-slide__box--left,
+.aac-slide__box--right,
+.aac-slide__box--bottom { text-align: left; }
+
+.aac-slide__heading {
+	margin: 0 0 0.25rem;
+	font-size: clamp( 1.4rem, 1rem + 1.6vw, 2rem );
+	line-height: 1.15;
+	font-weight: 700;
+	color: inherit;
+}
+
+.aac-slide__text {
+	margin: 0 0 0.25rem;
+	font-size: 1rem;
+	line-height: 1.4;
+	color: inherit;
+}
+
+.aac-slide__btn {
+	display: inline-block;
+	margin-top: 0.6rem;
+	padding: 0.5rem 1rem;
+	background: #fff;
+	color: #1a1a1a;
+	border-radius: 6px;
+	font-size: 0.95rem;      /* explicit, so it doesn't inherit a large theme base font */
+	font-weight: 600;
+	line-height: 1.3;
+	text-decoration: none;
+}
+.aac-slide__btn:focus-visible {
+	outline: 3px solid var( --aac-focus );
+	outline-offset: 3px;
+}
+.aac-slide__btn--square  { border-radius: 0; }
+.aac-slide__btn--rounded { border-radius: 6px; }
+.aac-slide__btn--pill    { border-radius: 999px; }
+/* Button size (>= 24px target at the smallest; medium matches the default). */
+.aac-slide__btn--sm { padding: 0.35rem 0.85rem; font-size: 0.85rem; }
+.aac-slide__btn--md { padding: 0.5rem 1rem;      font-size: 0.95rem; }
+.aac-slide__btn--lg { padding: 0.7rem 1.4rem;    font-size: 1.1rem; }
+
+/* CTA rendered as a text link (opt-in via "Call to action style: Text link").
+   Inherits the box text colour; underlined and clearly focusable, with a 44px
+   target so it stays an easy hit. */
+.aac-slide__link {
+	display: inline-flex;
+	align-items: center;
+	min-height: 44px;
+	margin-top: 0.4rem;
+	color: inherit;
+	font-weight: 600;
+	text-decoration: underline;
+	text-underline-offset: 3px;
+}
+.aac-slide__link:focus-visible {
+	outline: 3px solid var( --aac-focus );
+	outline-offset: 3px;
+}
+
+/* --- No-JS fallback ---------------------------------------------------- */
+.aac-slide + .aac-slide { border-top: 1px solid rgba( 0, 0, 0, 0.1 ); }
+
+/* --- Enhanced: stack slides ------------------------------------------- */
+.aac-carousel.is-enhanced .aac-carousel__track {
+	position: relative;
+	min-height: var( --aac-min-height );
+}
+.aac-carousel.is-enhanced .aac-slide {
+	position: absolute;
+	inset: 0;
+	height: 100%;
+	border-top: 0;
+}
+.aac-carousel.is-enhanced .aac-slide:not( .is-active ) {
+	visibility: hidden;
+	opacity: 0;
+	z-index: 0;
+}
+.aac-carousel.is-enhanced .aac-slide.is-active {
+	visibility: visible;
+	opacity: 1;
+	z-index: 1;
+}
+.aac-carousel.is-enhanced .aac-slide.in-transition { visibility: visible; }
+
+.aac-carousel.is-enhanced.aac-anim-fade .aac-slide {
+	transition: opacity 0.5s ease, visibility 0s linear 0.5s;
+}
+.aac-carousel.is-enhanced.aac-anim-fade .aac-slide.is-active {
+	transition: opacity 0.5s ease, visibility 0s linear 0s;
+}
+.aac-carousel.is-enhanced.aac-anim-slide .aac-slide {
+	transform: translateX( 2rem );
+	transition: opacity 0.5s ease, transform 0.5s ease, visibility 0s linear 0.5s;
+}
+.aac-carousel.is-enhanced.aac-anim-slide .aac-slide.is-active {
+	transform: translateX( 0 );
+	transition: opacity 0.5s ease, transform 0.5s ease, visibility 0s linear 0s;
+}
+
+/* ===================================================================== *
+ * Navigation bar BELOW the image
+ * ===================================================================== */
+.aac-carousel__nav {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	padding: 0.85rem 0.5rem 0.4rem;
+}
+.aac-carousel__nav-left   { display: flex; gap: 0.6rem; flex: 0 0 auto; }
+.aac-carousel__nav-center { display: flex; gap: 0.55rem; justify-content: center; align-items: center; flex: 1 1 auto; }
+.aac-carousel__nav-right  { display: flex; flex: 0 0 auto; justify-content: flex-end; }
+
+/* Large outlined arrow buttons ---------------------------------------- */
+.aac-carousel__arrow {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 3.25rem;
+	height: 3.25rem;
+	padding: 0;
+	border: 2px solid var( --aac-line );
+	border-radius: 50%;
+	background: #fff;
+	color: var( --aac-fg );
+	cursor: pointer;
+	transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+.aac-carousel__arrow > span {
+	font-size: 2rem;
+	font-weight: 700;
+	line-height: 1;
+	margin-top: -0.15rem;
+}
+.aac-carousel__arrow:hover { background: #f3f3f3; border-color: #b3b3b3; }
+.aac-carousel__arrow[disabled] { opacity: 0.4; cursor: default; }
+.aac-carousel__arrow:focus-visible {
+	outline: 3px solid var( --aac-focus );
+	outline-offset: 2px;
+}
+
+/* Dots — the BUTTON is the tappable target and is kept at 24x24 (WCAG 2.5.8
+   Target Size, Minimum); the visible dot is drawn with ::before, so the
+   target never shrinks below 24px even though the dot looks small. */
+.aac-carousel__dots {
+	display: flex;
+	gap: 0.5rem;
+	align-items: center;
+}
+.aac-carousel__dot {
+	position: relative;
+	width: 24px;
+	height: 24px;
+	min-width: 24px;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	font-size: 0;
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+.aac-carousel__dot::before {
+	content: "";
+	display: block;
+	width: 12px;
+	height: 12px;
+	border-radius: 999px;
+	background: #333333;
+	transition: width 0.2s ease, background-color 0.2s ease;
+}
+.aac-carousel__dot[aria-current="true"]::before {
+	width: 22px;
+	background: var( --aac-accent );
+}
+.aac-carousel__dot:focus-visible {
+	outline: 3px solid var( --aac-focus );
+	outline-offset: 2px;
+	border-radius: 6px;
+}
+
+/* Pause / Play button -------------------------------------------------- */
+.aac-carousel__arrow svg {
+	width: 24px;
+	height: 24px;
+	display: block;
+}
+.aac-carousel__pause {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 7.5em; /* fits the longer Pause/Play label: toggling never shifts the dots */
+	gap: 0.5rem;
+	padding: 0.6rem 1.15rem;
+	border: 2px solid var( --aac-line );
+	border-radius: 999px;
+	background: #fff;
+	color: var( --aac-fg );
+	font-size: 1rem;
+	font-weight: 600;
+	cursor: pointer;
+	min-height: 44px;
+}
+.aac-carousel__pause:hover { background: #f3f3f3; border-color: #b3b3b3; }
+.aac-carousel__pause:focus-visible {
+	outline: 3px solid var( --aac-focus );
+	outline-offset: 2px;
+}
+.aac-carousel__pause-icon {
+	width: 0.9rem;
+	height: 0.9rem;
+	display: inline-block;
+	position: relative;
+}
+.aac-carousel__pause.is-playing .aac-carousel__pause-icon::before,
+.aac-carousel__pause.is-playing .aac-carousel__pause-icon::after {
+	content: "";
+	position: absolute;
+	top: 0;
+	width: 0.3rem;
+	height: 0.9rem;
+	background: currentColor;
+}
+.aac-carousel__pause.is-playing .aac-carousel__pause-icon::before { left: 0.05rem; }
+.aac-carousel__pause.is-playing .aac-carousel__pause-icon::after  { right: 0.05rem; }
+.aac-carousel__pause:not( .is-playing ) .aac-carousel__pause-icon::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0.1rem;
+	width: 0;
+	height: 0;
+	border-top: 0.45rem solid transparent;
+	border-bottom: 0.45rem solid transparent;
+	border-left: 0.7rem solid currentColor;
+}
+
+/* Pause/Play size variants. Only padding/spacing/text scale; the icon geometry
+   stays constant so the play/pause glyph never distorts. Every size keeps at
+   least a 44px target (WCAG 2.5.5 Target Size). Medium is the base style. */
+.aac-carousel__pause--small {
+	padding: 0.35rem 0.8rem;
+	font-size: 0.9rem;
+	gap: 0.4rem;
+}
+.aac-carousel__pause--large {
+	padding: 0.85rem 1.6rem;
+	font-size: 1.15rem;
+	gap: 0.6rem;
+	min-height: 52px;
+}
+
+/* --- Visually hidden live region -------------------------------------- */
+.aac-visually-hidden {
+	position: absolute !important;
+	width: 1px; height: 1px;
+	margin: -1px; padding: 0; border: 0;
+	overflow: hidden; clip: rect( 0 0 0 0 );
+	white-space: nowrap;
+}
+
+/* --- Reduced motion --------------------------------------------------- */
+@media ( prefers-reduced-motion: reduce ) {
+	.aac-carousel * { transition: none !important; animation: none !important; }
+	.aac-carousel.is-enhanced.aac-anim-slide .aac-slide { transform: none; }
+	.aac-carousel__dot::before { transition: none; }
+}
+
+/* --- Small screens ---------------------------------------------------- */
+@media ( max-width: 600px ) {
+	.aac-carousel { --aac-min-height: 18rem; padding: 0.5rem; }
+	.aac-carousel__nav { gap: 0.5rem; flex-wrap: wrap; }
+	.aac-carousel__arrow { width: 2.75rem; height: 2.75rem; }
+	.aac-carousel__arrow > span { font-size: 1.6rem; }
+	.aac-slide__heading { font-size: 1.25rem; }
+}
+
+/* ===================================================================== *
+ * OVERLAY LAYOUT — controls and text box float OVER the image.
+ * Applied when the carousel has the .aac-layout-overlay class. These rules
+ * override the default card layout above.
+ * ===================================================================== */
+.aac-carousel.aac-layout-overlay {
+	--aac-card-bg: transparent; /* overlay has no card: stop the grey var reaching any descendant */
+	position: relative;
+	padding: 0;
+	background: transparent;
+	border-radius: 0;
+	box-shadow: none;
+	max-width: var( --aac-max-width );
+	width: 100%;
+	margin-inline: auto;
+	overflow-x: clip;            /* never let controls/box force a wider box */
+}
+.aac-carousel.aac-layout-overlay .aac-carousel__track {
+	border-radius: 0;
+}
+
+/* Box becomes a floating panel again (not a full-width bottom bar). */
+.aac-carousel.aac-layout-overlay .aac-slide {
+	align-items: center;
+	padding: 2rem 0;
+}
+.aac-carousel.aac-layout-overlay .aac-slide__box {
+	width: auto;
+	max-width: min( 32rem, 80% );
+	border-radius: 8px;
+}
+.aac-carousel.aac-layout-overlay .aac-slide__box--left {
+	margin-left: 5.5rem; margin-right: auto;   /* clear the left arrow */
+	max-width: min( 30rem, calc( 100% - 11rem ) );
+}
+.aac-carousel.aac-layout-overlay .aac-slide__box--right {
+	margin-right: 5.5rem; margin-left: auto;   /* clear the right arrow */
+	max-width: min( 30rem, calc( 100% - 11rem ) );
+}
+.aac-carousel.aac-layout-overlay .aac-slide__box--bottom {
+	align-self: flex-end; margin: 0 auto 4.5rem; text-align: center;
+	max-width: min( 32rem, calc( 100% - 11rem ) );  /* clear both arrows */
+}
+
+/* Nav bar is lifted off the bottom and laid OVER the image. */
+.aac-carousel.aac-layout-overlay .aac-carousel__nav {
+	position: absolute;
+	inset: 0;
+	padding: 0;
+	pointer-events: none;          /* let zones re-enable on the controls */
+	z-index: 3;
+}
+.aac-carousel.aac-layout-overlay .aac-carousel__nav-left {
+	position: absolute;
+	inset-block-start: 50%;
+	inset-inline: 1rem;
+	transform: translateY( -50% );
+	justify-content: space-between;
+	width: calc( 100% - 2rem );
+}
+.aac-carousel.aac-layout-overlay .aac-carousel__nav-center {
+	position: absolute;
+	inset-block-end: 1rem;
+	inset-inline: 0;
+}
+.aac-carousel.aac-layout-overlay .aac-carousel__nav-right {
+	position: absolute;
+	inset-block-start: 1rem;
+	inset-inline-end: 1rem;
+}
+.aac-carousel.aac-layout-overlay .aac-carousel__arrow,
+.aac-carousel.aac-layout-overlay .aac-carousel__dot,
+.aac-carousel.aac-layout-overlay .aac-carousel__pause {
+	pointer-events: auto;          /* controls are clickable */
+}
+
+/* Big arrows on a dark translucent circle so they read over imagery. */
+.aac-carousel.aac-layout-overlay .aac-carousel__arrow {
+	background: rgba( 0, 0, 0, 0.55 );
+	border-color: rgba( 255, 255, 255, 0.85 );
+	color: #fff;
+}
+.aac-carousel.aac-layout-overlay .aac-carousel__arrow:hover {
+	background: rgba( 0, 0, 0, 0.78 );
+}
+
+/* Dots over the image need a touch more contrast. */
+.aac-carousel.aac-layout-overlay .aac-carousel__dot::before {
+	background: rgba( 255, 255, 255, 0.6 );
+	box-shadow: 0 0 0 1px rgba( 0, 0, 0, 0.4 );
+}
+.aac-carousel.aac-layout-overlay .aac-carousel__dot[aria-current="true"]::before {
+	background: #fff;
+}
+
+/* Pause button over the image. */
+.aac-carousel.aac-layout-overlay .aac-carousel__pause {
+	background: rgba( 0, 0, 0, 0.55 );
+	border-color: rgba( 255, 255, 255, 0.85 );
+	color: #fff;
+}
+.aac-carousel.aac-layout-overlay .aac-carousel__pause:hover {
+	background: rgba( 0, 0, 0, 0.78 );
+}
+
+/* High-visibility focus over imagery. */
+.aac-carousel.aac-layout-overlay .aac-carousel__arrow:focus-visible,
+.aac-carousel.aac-layout-overlay .aac-carousel__dot:focus-visible,
+.aac-carousel.aac-layout-overlay .aac-carousel__pause:focus-visible {
+	outline: 3px solid #ffbf47;
+}
+
+@media ( max-width: 600px ) {
+	/* MOBILE: overlay layout reverts to the CARD layout for accessibility.
+	   On small screens an overlay (text over a photo, side arrows) is cramped
+	   and controls collide with text. Below 600px we undo the overlay overrides
+	   so the image sits on top, the text becomes a solid bar beneath it (using
+	   the slide's own colours), and the controls sit in a bar below — identical
+	   to the card layout. Desktop keeps the overlay look. */
+
+	/* Container: restore the contained CARD shell (padding, white bg, rounded
+	   corners, soft shadow) so everything sits inside one card like layout 1. */
+	.aac-carousel.aac-layout-overlay {
+		overflow: visible;
+		padding: 0.75rem;
+		background: var( --aac-card-bg );
+		border-radius: 16px;
+		box-shadow: 0 10px 30px rgba( 0, 0, 0, 0.10 );
+	}
+
+	/* Slide: no longer a fixed-height hero — image + text stack naturally. */
+	.aac-carousel.aac-layout-overlay .aac-slide {
+		display: block;
+		min-height: 0;
+		align-items: stretch;
+	}
+	/* Image sits on top with a real height (it was absolutely positioned). */
+	.aac-carousel.aac-layout-overlay .aac-slide__bg {
+		position: relative;
+		display: block;
+		height: 14rem;
+		margin: 0;
+		border-radius: 8px 8px 0 0;
+	}
+	/* No gap between image and text box. */
+	.aac-carousel.aac-layout-overlay .aac-slide {
+		padding: 0;
+		gap: 0;
+		line-height: 0;        /* kill inline-image whitespace gap */
+	}
+	/* Enhanced mode stacks slides absolutely; keep that, but give the track
+	   a height that fits image + text so nothing is clipped. */
+	.aac-carousel.aac-layout-overlay.is-enhanced .aac-carousel__track {
+		min-height: 0;
+		height: auto;
+	}
+	.aac-carousel.aac-layout-overlay.is-enhanced .aac-slide {
+		position: absolute;
+	}
+	.aac-carousel.aac-layout-overlay.is-enhanced .aac-slide.is-active {
+		position: relative;
+	}
+
+	/* Text box: solid bar BELOW the image (full width), using the slide's
+	   own overlayColor / textColor (already inline on the element). */
+	.aac-carousel.aac-layout-overlay .aac-slide__box,
+	.aac-carousel.aac-layout-overlay .aac-slide__box--left,
+	.aac-carousel.aac-layout-overlay .aac-slide__box--right,
+	.aac-carousel.aac-layout-overlay .aac-slide__box--bottom {
+		position: relative;
+		width: 100%;
+		max-width: none;
+		margin: 0;
+		border-radius: 0 0 8px 8px;
+		padding: 1.1rem 1.25rem;
+		align-self: stretch;
+		text-align: left;
+	}
+
+	/* Controls: bring the nav OUT of the absolute overlay and back to a
+	   static bar beneath the card. */
+	.aac-carousel.aac-layout-overlay .aac-carousel__nav {
+		position: static;
+		inset: auto;
+		display: flex;
+		flex-wrap: nowrap;          /* keep arrows + dots + play on ONE line */
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.85rem 0.25rem 0.4rem;
+		pointer-events: auto;
+		line-height: normal;        /* restore (slide set line-height:0) */
+	}
+	.aac-carousel.aac-layout-overlay .aac-carousel__nav-left {
+		position: static; inset: auto; transform: none;
+		width: auto; flex: 0 0 auto; justify-content: flex-start; gap: 0.6rem;
+	}
+	.aac-carousel.aac-layout-overlay .aac-carousel__nav-center {
+		position: static; inset: auto; flex: 1 1 auto; justify-content: center;
+	}
+	.aac-carousel.aac-layout-overlay .aac-carousel__nav-right {
+		position: static; inset: auto; flex: 0 0 auto; justify-content: flex-end;
+	}
+
+	/* Controls revert to the light/outlined card style (they were dark/translucent
+	   for over-image use; on the card bar they sit on the page background). */
+	.aac-carousel.aac-layout-overlay .aac-carousel__arrow,
+	.aac-carousel.aac-layout-overlay .aac-carousel__pause {
+		background: #fff;
+		border-color: #6b6b6b;
+		color: #1a1a1a;
+	}
+	.aac-carousel.aac-layout-overlay .aac-carousel__dot::before {
+		background: #333;
+		box-shadow: none;
+	}
+	.aac-carousel.aac-layout-overlay .aac-carousel__dot[aria-current="true"]::before {
+		background: #b8541a;
+	}
+	/* Keep hover readable on the mobile card-style controls (was inheriting the
+	   dark over-image hover, which made text/icon hard to see). */
+	.aac-carousel.aac-layout-overlay .aac-carousel__arrow:hover,
+	.aac-carousel.aac-layout-overlay .aac-carousel__pause:hover {
+		background: #f3f3f3;
+		border-color: #6b6b6b;
+		color: #1a1a1a;
+	}
+	/* Smaller CTA on mobile so it doesn't dominate the card. */
+	.aac-carousel.aac-layout-overlay .aac-slide__btn {
+		font-size: 0.9rem;
+		padding: 0.45rem 0.9rem;
+	}
+	/* Compact controls so arrows + dots + play stay on one line. */
+	.aac-carousel.aac-layout-overlay .aac-carousel__arrow {
+		width: 2.5rem; height: 2.5rem;
+	}
+	.aac-carousel.aac-layout-overlay .aac-carousel__arrow > span { font-size: 1.5rem; }
+	.aac-carousel.aac-layout-overlay .aac-carousel__nav-center { gap: 0.4rem; min-width: 0; }
+	.aac-carousel.aac-layout-overlay .aac-carousel__pause {
+		padding: 0.35rem 0.6rem;
+		font-size: 0.85rem;
+		white-space: nowrap;
+	}
+}

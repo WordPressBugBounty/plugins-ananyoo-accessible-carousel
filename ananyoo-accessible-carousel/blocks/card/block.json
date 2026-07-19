@@ -1,0 +1,43 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "anacb/card",
+	"version": "2.5.6",
+	"title": "Scroller Card",
+	"category": "ananyoo-accessible",
+	"icon": "id-alt",
+	"description": "A single card within an Ananyoo Accessible Card Scroller: image, heading, text and a link.",
+	"textdomain": "ananyoo-accessible-carousel",
+	"parent": [ "anacb/scroller" ],
+	"supports": {
+		"html": false,
+		"reusable": false,
+		"inserter": false,
+		"color": { "background": true, "text": true },
+		"spacing": { "padding": true, "margin": true },
+		"typography": { "fontSize": true, "lineHeight": true },
+		"border": { "color": true, "radius": true, "width": true, "style": true }
+	},
+	"attributes": {
+		"imageId":         { "type": "number" },
+		"imageUrl":        { "type": "string", "default": "" },
+		"imageAlt":        { "type": "string", "default": "" },
+		"imageDecorative": { "type": "boolean", "default": true },
+		"heading":         { "type": "string", "default": "" },
+		"headingLevel":    { "type": "number", "default": 3 },
+		"headingColor":    { "type": "string", "default": "" },
+		"headingFontSize": { "type": "string", "default": "" },
+		"text":            { "type": "string", "default": "" },
+		"linkText":        { "type": "string", "default": "" },
+		"linkUrl":         { "type": "string", "default": "" },
+		"ctaType":         { "type": "string", "default": "link" },
+		"ctaBgColor":      { "type": "string", "default": "" },
+		"ctaTextColor":    { "type": "string", "default": "" },
+		"ctaShape":        { "type": "string", "default": "rounded" },
+		"ctaSize":         { "type": "string", "default": "medium" }
+	},
+	"editorScript": "aac-editor",
+	"editorStyle":  "aac-editor-style",
+	"style":        "aac-scroller-style",
+	"render":       "file:./render.php"
+}

@@ -1,0 +1,146 @@
+/**
+ * Accessible Hero Carousel — editor-only styles.
+ *
+ * In the editor every slide is shown so authors can edit each one. Each slide
+ * previews its background image and contrast box in the chosen position.
+ */
+
+.aac-slide--editor {
+	position: relative;
+	display: flex;
+	min-height: 22rem;
+	margin-bottom: 1rem;
+	background-color: #2b2f36;
+	background-size: cover;
+	background-position: center;
+	border-radius: 6px;
+	overflow: hidden;
+}
+
+.aac-slide--editor .aac-slide__box {
+	position: relative;
+	margin: auto 0;
+	padding: 1.25rem 1.5rem;
+	max-width: min( 30rem, 80% );
+	border-radius: 6px;
+}
+
+.aac-slide--editor .aac-slide__box--left   { margin-left: 1.5rem;  margin-right: auto; }
+.aac-slide--editor .aac-slide__box--right  { margin-right: 1.5rem; margin-left: auto; }
+.aac-slide--editor .aac-slide__box--bottom { margin: auto auto 1.5rem; text-align: center; }
+
+.aac-slide--editor .aac-slide__heading {
+	display: block;
+	font-size: 1.75rem;
+	font-weight: 700;
+	line-height: 1.2;
+	background: transparent;
+	border: 0;
+	color: inherit;
+	width: 100%;
+}
+
+.aac-slide--editor .aac-slide__text {
+	display: block;
+	background: transparent;
+	border: 0;
+	color: inherit;
+	width: 100%;
+	resize: none;
+}
+
+.aac-slide--editor .aac-slide__heading::placeholder,
+.aac-slide--editor .aac-slide__text::placeholder {
+	color: rgba( 255, 255, 255, 0.65 );
+}
+
+.aac-slide--editor .aac-slide__btn {
+	display: inline-block;
+	margin-top: 0.75rem;
+	padding: 0.5rem 1rem;
+	background: #fff;
+	color: #111;
+	border-radius: 4px;
+	font-weight: 600;
+}
+
+.aac-carousel--editor > .block-editor-inner-blocks > .block-editor-block-list__layout > * + * {
+	margin-top: 1rem;
+}
+
+/* --- Scroller + card (editor preview) --------------------------------- */
+.aac-scroller--editor .block-editor-inner-blocks > .block-editor-block-list__layout {
+	display: flex;
+	gap: 1rem;
+	overflow-x: auto;
+	padding-bottom: 0.5rem;
+}
+.aac-scroller--editor .block-editor-block-list__layout > * {
+	flex: 0 0 calc( ( 100% - 2rem ) / 3 );
+	margin: 0;
+}
+
+.aac-card--editor {
+	border: 1px solid #e0e0e0;
+	border-radius: 12px;
+	overflow: hidden;
+	background: #fff;
+	display: flex;
+	flex-direction: column;
+	min-height: 18rem;
+}
+.aac-card__media {
+	display: block;
+	width: 100%;
+	aspect-ratio: 16 / 10;
+	object-fit: cover;
+}
+.aac-card__media--placeholder {
+	background: repeating-linear-gradient( 45deg, #ededed, #ededed 10px, #f6f6f6 10px, #f6f6f6 20px );
+}
+.aac-card__body {
+	padding: 1rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.4rem;
+}
+.aac-card__heading {
+	font-size: 1.2rem;
+	font-weight: 700;
+	line-height: 1.2;
+	background: transparent;
+	border: 0;
+	width: 100%;
+}
+.aac-card__text {
+	background: transparent;
+	border: 0;
+	width: 100%;
+	resize: none;
+}
+.aac-card__link {
+	margin-top: 0.5rem;
+	font-weight: 600;
+	text-decoration: underline;
+	text-underline-offset: 3px;
+}
+
+/* Card CTA button preview (editor) */
+.aac-card__link--button {
+	text-decoration: none;
+	padding: 0.5rem 1.1rem;
+	display: inline-flex;
+	align-items: center;
+	font-weight: 600;
+}
+
+/* Slide CTA text-link preview (editor) */
+.aac-slide--editor .aac-slide__link {
+	display: inline-flex;
+	align-items: center;
+	margin-top: 0.5rem;
+	font-weight: 600;
+	color: inherit;
+	text-decoration: underline;
+	text-underline-offset: 3px;
+}

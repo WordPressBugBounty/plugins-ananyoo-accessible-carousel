@@ -1,0 +1,204 @@
+/**
+ * Ananyoo Accessible Card Scroller — front-end styles.
+ *
+ * Neutral by default (inherits the theme's fonts and colours); only the
+ * structure is opinionated. The whole "cards per view" behaviour is one
+ * calc() driven by two custom properties the block sets inline:
+ *   --aac-per-view  (desktop column count)
+ *   --aac-gap       (gap between cards, e.g. 24px)
+ * Breakpoints only reassign the derived --aac-cols, so the card width
+ * recomputes automatically. No JavaScript is required to scroll.
+ */
+
+.aac-scroller {
+	--aac-per-view: 3;
+	--aac-gap: 24px;
+	--aac-focus: #1a73e8;
+	--aac-card-line: #e3e3e3;
+	--aac-card-bg: #ffffff;
+	position: relative;
+	margin-block: 1.5rem;
+	display: flex;
+	flex-direction: column;
+}
+
+/* Scroll container: native scroll + snap, keyboard-focusable on its own. */
+.aac-scroller__viewport {
+	--aac-cols: var( --aac-per-view );
+	min-width: 0;
+	overflow-x: auto;
+	overflow-y: hidden;
+	scroll-snap-type: x mandatory;
+	scroll-behavior: smooth;
+	-webkit-overflow-scrolling: touch;
+	scroll-padding-inline-start: 2px;
+	padding: 0.5rem 2px 1rem;     /* room so focus rings are not clipped */
+	scrollbar-width: thin;        /* a visible scrollbar is a scroll affordance */
+}
+.aac-scroller__viewport:focus-visible {
+	outline: 3px solid var( --aac-focus );
+	outline-offset: 3px;
+	border-radius: 8px;
+}
+
+/* Track stays a real list so screen readers announce "list, N items". */
+.aac-scroller__track {
+	display: flex;
+	gap: var( --aac-gap );
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+/* Responsive column count: desktop = chosen value, tablet caps at 2,
+   mobile = 1. min() never increases the count on smaller screens. */
+@media ( max-width: 900px ) {
+	.aac-scroller__viewport { --aac-cols: min( var( --aac-per-view ), 2 ); }
+}
+@media ( max-width: 600px ) {
+	.aac-scroller__viewport { --aac-cols: 1; }
+}
+
+.aac-scroller__card {
+	flex: 0 0 auto;
+	width: calc( ( 100% - ( var( --aac-cols ) - 1 ) * var( --aac-gap ) ) / var( --aac-cols ) );
+	scroll-snap-align: start;
+	display: flex;
+	flex-direction: column;
+	background: var( --aac-card-bg );
+	border: 1px solid var( --aac-card-line );
+	border-radius: 12px;
+	overflow: hidden;
+	/* Sensible default so card text doesn't inherit an oversized theme base
+	   font. The block's Typography control sets font-size on this same element,
+	   so it still overrides this default; the heading keeps its own size. */
+	font-size: 1rem;
+}
+
+/* The card receives keyboard focus after a Previous/Next press (its tabindex
+   is -1). Use an INSET outline so the ring is never clipped by the card's own
+   overflow:hidden or by the viewport's horizontal scroll at the edges. */
+.aac-scroller__card:focus-visible,
+.aac-scroller__card:focus {
+	outline: 3px solid var( --aac-focus );
+	outline-offset: -3px;
+}
+
+/* Media: real <img> when supplied, neutral placeholder block otherwise. */
+.aac-scroller__media {
+	display: block;
+	width: 100%;
+	aspect-ratio: 16 / 10;
+	object-fit: cover;
+}
+.aac-scroller__media--placeholder {
+	background: repeating-linear-gradient( 45deg, #ededed, #ededed 10px, #f6f6f6 10px, #f6f6f6 20px );
+}
+
+.aac-scroller__body {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	padding: 1.25rem;
+}
+.aac-scroller__heading {
+	margin: 0 0 0.5rem;
+	font-size: 1.25rem;
+	line-height: 1.2;
+}
+.aac-scroller__text {
+	margin: 0 0 1.1rem;
+	line-height: 1.5;
+}
+
+/* Link is a neutral, clearly-focusable text link by default; pin to the
+   bottom so cards stay equal height. Themes can restyle it into a button. */
+.aac-scroller__link {
+	margin-top: auto;
+	align-self: flex-start;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.4rem;
+	min-height: 44px;             /* WCAG 2.5.5 target size */
+	padding: 0.4rem 0.2rem;
+	font-weight: 600;
+	text-decoration: underline;
+	text-underline-offset: 3px;
+	color: inherit;
+}
+.aac-scroller__link:focus-visible {
+	outline: 3px solid var( --aac-focus );
+	outline-offset: 3px;
+}
+.aac-scroller__arrow { transition: transform 0.15s ease; }
+.aac-scroller__link:hover .aac-scroller__arrow { transform: translateX( 3px ); }
+
+/* Previous / next controls (injected by scroller-view.js when cards overflow).
+   Rendered AFTER the viewport in the DOM and below the cards, so focus order,
+   DOM order and visual order all agree (WCAG 2.4.3). */
+.aac-scroller__controls {
+	display: flex;
+	gap: 0.6rem;
+	justify-content: flex-end;
+	margin-top: 0.75rem;
+}
+.aac-scroller__btn {
+	width: 48px;
+	height: 48px;                 /* >= 44px target */
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border: 2px solid currentColor;
+	background: transparent;
+	color: inherit;
+	border-radius: 50%;
+	cursor: pointer;
+	font-size: 1.5rem;
+	line-height: 1;
+}
+.aac-scroller__btn:focus-visible {
+	outline: 3px solid var( --aac-focus );
+	outline-offset: 2px;
+}
+.aac-scroller__btn[disabled] {
+	opacity: 0.35;
+	cursor: default;
+}
+
+/* Visually hidden (distinct link context). Defined here so the stylesheet is
+   self-sufficient when only the scroller is on the page. */
+.aac-visually-hidden {
+	position: absolute !important;
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	padding: 0;
+	border: 0;
+	overflow: hidden;
+	clip: rect( 0 0 0 0 );
+	white-space: nowrap;
+}
+
+@media ( prefers-reduced-motion: reduce ) {
+	.aac-scroller__viewport { scroll-behavior: auto; }
+	.aac-scroller__arrow { transition: none; }
+}
+
+/* CTA rendered as a button (opt-in via the card's "Call to action style").
+   Neutral defaults; the card's colour controls override these via inline
+   styles. Keeps the base link's 44px target and focus ring. */
+.aac-scroller__link--button {
+	text-decoration: none;
+	padding: 0.55rem 1.15rem;
+	background: #1a1f36;
+	color: #fff;
+	font-weight: 600;
+}
+.aac-scroller__link--button:hover { filter: brightness( 0.92 ); }
+.aac-scroller__link--square  { border-radius: 0; }
+.aac-scroller__link--rounded { border-radius: 8px; }
+.aac-scroller__link--pill    { border-radius: 999px; }
+/* Button size (the base keeps a 44px target; these vary padding + text). */
+.aac-scroller__link--sm { padding: 0.4rem 0.9rem;  font-size: 0.85rem; }
+.aac-scroller__link--md { padding: 0.55rem 1.15rem; font-size: 0.95rem; }
+.aac-scroller__link--lg { padding: 0.75rem 1.5rem; font-size: 1.1rem; }

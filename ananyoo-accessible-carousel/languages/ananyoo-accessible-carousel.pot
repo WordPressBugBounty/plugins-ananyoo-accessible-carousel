@@ -1,0 +1,524 @@
+# Copyright (C) 2026 Shivaji Mitra (Ananyoo)
+# This file is distributed under the GPL-2.0-or-later license.
+msgid ""
+msgstr ""
+"Project-Id-Version: Ananyoo Accessible Carousel 2.4.2\n"
+"Report-Msgid-Bugs-To: https://ananyoo.com\n"
+"POT-Creation-Date: 2026-06-06 16:28+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language-Team: \n"
+"X-Domain: ananyoo-accessible-carousel\n"
+
+#. translators: %s: the scroller's accessible label.
+#: blocks/scroller/render.php:59
+msgid "%s. Use the left and right arrow keys to scroll."
+msgstr ""
+
+#: assets/js/editor.js:728
+msgid "A button keeps a 44px target and the same accessible link text."
+msgstr ""
+
+#: assets/js/editor.js:445
+msgid "A button keeps a 44px target; a link is underlined on the box."
+msgstr ""
+
+#: assets/js/editor.js:176 assets/js/editor.js:581
+msgid "Accessible label"
+msgstr ""
+
+#: assets/js/editor.js:293
+msgid "All sizes keep at least a 44px touch target (WCAG 2.5.5)."
+msgstr ""
+
+#: includes/patterns.php:34
+msgid "Ananyoo Carousel"
+msgstr ""
+
+#: assets/js/editor.js:211
+msgid "Animation is disabled automatically for visitors who prefer reduced motion."
+msgstr ""
+
+#: assets/js/editor.js:193
+msgid "Any CSS value, e.g. 1200px, 90%, or 70rem. Leave blank to fill the container."
+msgstr ""
+
+#: assets/js/editor.js:199
+msgid "Any CSS value, e.g. 500px, 70vh, or 30rem. Leave blank for the default height."
+msgstr ""
+
+#: assets/js/editor.js:215
+msgid "Autoplay"
+msgstr ""
+
+#: assets/js/editor.js:221
+msgid "Autoplay interval (seconds)"
+msgstr ""
+
+#: assets/js/editor.js:342
+msgid "Background image"
+msgstr ""
+
+#: includes/patterns.php:82
+msgid "Bordered cards with solid buttons and crisp corners. Neutral and AA by default."
+msgstr ""
+
+#: assets/js/editor.js:385
+msgid "Bottom"
+msgstr ""
+
+#: assets/js/editor.js:474
+msgid "Box background"
+msgstr ""
+
+#: assets/js/editor.js:380
+msgid "Box position"
+msgstr ""
+
+#: assets/js/editor.js:442 assets/js/editor.js:726
+msgid "Button"
+msgstr ""
+
+#: assets/js/editor.js:477 assets/js/editor.js:760
+msgid "Button background"
+msgstr ""
+
+#: assets/js/editor.js:406
+msgid "Button link (URL)"
+msgstr ""
+
+#: assets/js/editor.js:449 assets/js/editor.js:732
+msgid "Button shape"
+msgstr ""
+
+#: assets/js/editor.js:459 assets/js/editor.js:742
+msgid "Button size"
+msgstr ""
+
+#: assets/js/editor.js:401 assets/js/editor.js:478 assets/js/editor.js:761
+msgid "Button text"
+msgstr ""
+
+#: assets/js/editor.js:439 assets/js/editor.js:722
+msgid "Call to action style"
+msgstr ""
+
+#: assets/js/editor.js:185
+msgid "Card (controls below image)"
+msgstr ""
+
+#: assets/js/editor.js:251
+msgid "Card background"
+msgstr ""
+
+#: assets/js/editor.js:245
+msgid "Card colour"
+msgstr ""
+
+#: assets/js/editor.js:756
+msgid "Card colours"
+msgstr ""
+
+#: assets/js/editor.js:681
+msgid "Card content"
+msgstr ""
+
+#: assets/js/editor.js:708
+msgid "Card design"
+msgstr ""
+
+#: assets/js/editor.js:811
+msgid "Card heading"
+msgstr ""
+
+#: assets/js/editor.js:810
+msgid "Card heading…"
+msgstr ""
+
+#: assets/js/editor.js:645
+msgid "Card image"
+msgstr ""
+
+#: assets/js/editor.js:188
+msgid "Card places the text bar and controls in a panel below the image. Overlay floats the box and controls over the image."
+msgstr ""
+
+#: blocks/scroller/render.php:24
+msgid "Card scroller"
+msgstr ""
+
+#: assets/js/editor.js:818
+msgid "Card text"
+msgstr ""
+
+#: assets/js/editor.js:817
+msgid "Card text…"
+msgstr ""
+
+#: assets/js/editor.js:587
+msgid "Cards per view (desktop)"
+msgstr ""
+
+#: includes/patterns.php:81
+msgid "Cards — Editorial"
+msgstr ""
+
+#: includes/patterns.php:109
+msgid "Cards — Minimal"
+msgstr ""
+
+#: includes/patterns.php:95
+msgid "Cards — Soft"
+msgstr ""
+
+#: blocks/slider/render.php:122
+msgid "carousel"
+msgstr ""
+
+#: assets/js/editor.js:174
+msgid "Carousel settings"
+msgstr ""
+
+#: assets/js/editor.js:279
+msgid "Center (with the dots)"
+msgstr ""
+
+#: assets/js/editor.js:569
+msgid "Choose a card layout"
+msgstr ""
+
+#: assets/js/editor.js:163
+msgid "Choose a carousel layout"
+msgstr ""
+
+#: assets/js/editor.js:397 assets/js/editor.js:690
+msgid "Choose the level that fits this page outline."
+msgstr ""
+
+#: assets/js/editor.js:471
+msgid "Colours"
+msgstr ""
+
+#: assets/js/editor.js:378
+msgid "Content box"
+msgstr ""
+
+#: assets/js/editor.js:275
+msgid "Control position"
+msgstr ""
+
+#: assets/js/editor.js:286
+msgid "Control size"
+msgstr ""
+
+#: assets/js/editor.js:420 assets/js/editor.js:432 assets/js/editor.js:713
+msgid "Default"
+msgstr ""
+
+#: assets/js/editor.js:370 assets/js/editor.js:673
+msgid "Describe what the image conveys."
+msgstr ""
+
+#: assets/js/editor.js:137
+msgid "Editorial"
+msgstr ""
+
+#: assets/js/editor.js:424 assets/js/editor.js:717
+msgid "Extra large"
+msgstr ""
+
+#: assets/js/editor.js:208
+msgid "Fade"
+msgstr ""
+
+#: blocks/slider/render.php:21
+msgid "Featured content carousel"
+msgstr ""
+
+#: includes/patterns.php:69
+msgid "Flat hero carousel with an underlined text-link call to action. The lightest, most restrained look."
+msgstr ""
+
+#: includes/patterns.php:110
+msgid "Flat, square, bordered cards with an underlined text-link call to action. The lightest look."
+msgstr ""
+
+#: assets/js/editor.js:594
+msgid "Gap between cards (px)"
+msgstr ""
+
+#: assets/js/editor.js:476 assets/js/editor.js:759
+msgid "Heading colour"
+msgstr ""
+
+#: assets/js/editor.js:390 assets/js/editor.js:683
+msgid "Heading level"
+msgstr ""
+
+#: assets/js/editor.js:417 assets/js/editor.js:710
+msgid "Heading size"
+msgstr ""
+
+#: assets/js/editor.js:529
+msgid "Heading…"
+msgstr ""
+
+#: includes/patterns.php:42
+msgid "Hero — Editorial"
+msgstr ""
+
+#: includes/patterns.php:68
+msgid "Hero — Minimal"
+msgstr ""
+
+#: includes/patterns.php:55
+msgid "Hero — Soft"
+msgstr ""
+
+#: includes/patterns.php:43
+msgid "High-contrast hero carousel with solid buttons and crisp corners. Neutral and AA by default."
+msgstr ""
+
+#: assets/js/editor.js:369 assets/js/editor.js:672
+msgid "Image alt text"
+msgstr ""
+
+#: assets/js/editor.js:363 assets/js/editor.js:666
+msgid "Image is decorative"
+msgstr ""
+
+#: assets/js/editor.js:482
+msgid "Keep box / button background and text contrast at 4.5:1 or higher (WCAG 1.4.3)."
+msgstr ""
+
+#: assets/js/editor.js:291 assets/js/editor.js:423 assets/js/editor.js:434
+#: assets/js/editor.js:464 assets/js/editor.js:716 assets/js/editor.js:747
+msgid "Large"
+msgstr ""
+
+#: assets/js/editor.js:182
+msgid "Layout style"
+msgstr ""
+
+#: assets/js/editor.js:667
+msgid "Leave on when the heading/text already convey the meaning."
+msgstr ""
+
+#: assets/js/editor.js:364
+msgid "Leave on when the heading/text already convey the meaning. Turn off only if the image itself carries information."
+msgstr ""
+
+#: assets/js/editor.js:383
+msgid "Left"
+msgstr ""
+
+#: assets/js/editor.js:280
+msgid "Left (with the arrows)"
+msgstr ""
+
+#: assets/js/editor.js:694
+msgid "Link text"
+msgstr ""
+
+#: assets/js/editor.js:699
+msgid "Link URL"
+msgstr ""
+
+#: assets/js/editor.js:227
+msgid "Loop slides"
+msgstr ""
+
+#: assets/js/editor.js:192
+msgid "Maximum width"
+msgstr ""
+
+#: assets/js/editor.js:422 assets/js/editor.js:463 assets/js/editor.js:715
+#: assets/js/editor.js:746
+msgid "Medium"
+msgstr ""
+
+#: assets/js/editor.js:290
+msgid "Medium (default)"
+msgstr ""
+
+#: assets/js/editor.js:139
+msgid "Minimal"
+msgstr ""
+
+#: assets/js/editor.js:177
+msgid "Names the carousel region for screen reader users."
+msgstr ""
+
+#: assets/js/editor.js:582
+msgid "Names the scroller region for screen reader users."
+msgstr ""
+
+#: assets/js/editor.js:207
+msgid "None (instant)"
+msgstr ""
+
+#: assets/js/editor.js:216
+msgid "Off is recommended. A pause/stop control is always shown when on."
+msgstr ""
+
+#: assets/js/editor.js:186
+msgid "Overlay (controls over image)"
+msgstr ""
+
+#: assets/js/editor.js:537
+msgid "Paragraph text…"
+msgstr ""
+
+#: blocks/slider/render.php:87
+msgid "Pause"
+msgstr ""
+
+#: assets/js/editor.js:258
+msgid "Pause / stop control"
+msgstr ""
+
+#: assets/js/editor.js:263
+msgid "Pause button label"
+msgstr ""
+
+#: assets/js/editor.js:134
+msgid "Pick a style to start with — every part is editable afterwards, and all three are accessible by default."
+msgstr ""
+
+#: assets/js/editor.js:454 assets/js/editor.js:737
+msgid "Pill"
+msgstr ""
+
+#: blocks/slider/render.php:90
+msgid "Play"
+msgstr ""
+
+#: assets/js/editor.js:269
+msgid "Play button label"
+msgstr ""
+
+#: assets/js/editor.js:361 assets/js/editor.js:664
+msgid "Remove image"
+msgstr ""
+
+#: assets/js/editor.js:352 assets/js/editor.js:655
+msgid "Replace image"
+msgstr ""
+
+#: assets/js/editor.js:384
+msgid "Right"
+msgstr ""
+
+#: assets/js/editor.js:278
+msgid "Right (default)"
+msgstr ""
+
+#: assets/js/editor.js:453 assets/js/editor.js:736
+msgid "Rounded"
+msgstr ""
+
+#: includes/patterns.php:96
+msgid "Rounded cards on a light surface with pill buttons. Friendly, neutral, and AA by default."
+msgstr ""
+
+#: includes/patterns.php:56
+msgid "Rounded hero carousel with pill buttons. Friendly, neutral, and AA by default."
+msgstr ""
+
+#: assets/js/editor.js:579
+msgid "Scroller settings"
+msgstr ""
+
+#: assets/js/editor.js:352 assets/js/editor.js:655
+msgid "Select image"
+msgstr ""
+
+#: assets/js/editor.js:232 assets/js/editor.js:600
+msgid "Show previous / next buttons"
+msgstr ""
+
+#: assets/js/editor.js:237
+msgid "Show slide dots"
+msgstr ""
+
+#: assets/js/editor.js:270
+msgid "Shown after a visitor stops the auto-rotation."
+msgstr ""
+
+#: assets/js/editor.js:264
+msgid "Shown while the carousel is auto-rotating. Used as both the visible text and the screen reader name, so the two always match (WCAG 2.5.3)."
+msgstr ""
+
+#: assets/js/editor.js:209
+msgid "Slide"
+msgstr ""
+
+#: assets/js/editor.js:415
+msgid "Slide design"
+msgstr ""
+
+#: assets/js/editor.js:530
+msgid "Slide heading"
+msgstr ""
+
+#: assets/js/editor.js:198
+msgid "Slide height"
+msgstr ""
+
+#: assets/js/editor.js:538
+msgid "Slide text"
+msgstr ""
+
+#: assets/js/editor.js:289 assets/js/editor.js:421 assets/js/editor.js:433
+#: assets/js/editor.js:462 assets/js/editor.js:714 assets/js/editor.js:745
+msgid "Small"
+msgstr ""
+
+#: assets/js/editor.js:138
+msgid "Soft"
+msgstr ""
+
+#: assets/js/editor.js:452 assets/js/editor.js:735
+msgid "Square"
+msgstr ""
+
+#: assets/js/editor.js:140
+msgid "Start blank"
+msgstr ""
+
+#: assets/js/editor.js:590
+msgid "Tablet shows at most 2 and mobile shows 1, automatically — this is the desktop count."
+msgstr ""
+
+#: assets/js/editor.js:475
+msgid "Text colour"
+msgstr ""
+
+#: assets/js/editor.js:443 assets/js/editor.js:725
+msgid "Text link"
+msgstr ""
+
+#: assets/js/editor.js:429
+msgid "Text size"
+msgstr ""
+
+#: assets/js/editor.js:601
+msgid "The row is always scrollable with the keyboard, touch and the scrollbar; these buttons are an extra. They appear only when the cards overflow."
+msgstr ""
+
+#: assets/js/editor.js:204
+msgid "Transition animation"
+msgstr ""
+
+#: assets/js/editor.js:260
+msgid "Turn on Autoplay to configure the pause/stop control. Whenever autoplay is on, the control is always shown (WCAG 2.2.2) — these options only change its wording, position, and size."
+msgstr ""
+
+#: assets/js/editor.js:765
+msgid "When the CTA is a button, keep its background and text contrast at 4.5:1 or higher (WCAG 1.4.3)."
+msgstr ""
+
+#: assets/js/editor.js:282
+msgid "Which part of the control bar holds the pause/stop button."
+msgstr ""

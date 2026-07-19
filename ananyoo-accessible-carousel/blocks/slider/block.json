@@ -1,0 +1,39 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "anacb/slider",
+	"version": "2.5.6",
+	"title": "Accessible Carousel",
+	"category": "ananyoo-accessible",
+	"icon": "images-alt2",
+	"description": "A WCAG-compliant hero carousel. Add slides with a background image and an overlaid heading, text, and button.",
+	"keywords": [ "carousel", "slider", "hero", "slideshow", "accessible" ],
+	"textdomain": "ananyoo-accessible-carousel",
+	"supports": {
+		"html": false,
+		"anchor": true,
+		"align": [ "wide", "full" ]
+	},
+	"attributes": {
+		"label":      { "type": "string",  "default": "" },
+		"layout":     { "type": "string",  "default": "card" },
+		"maxWidth":   { "type": "string",  "default": "" },
+		"slideHeight":{ "type": "string",  "default": "" },
+		"animation":  { "type": "string",  "default": "fade" },
+		"autoplay":   { "type": "boolean", "default": false },
+		"interval":   { "type": "number",  "default": 6000 },
+		"loop":       { "type": "boolean", "default": true },
+		"showArrows": { "type": "boolean", "default": true },
+		"showDots":   { "type": "boolean", "default": true },
+		"cardBg":     { "type": "string",  "default": "#cccccc" },
+		"pauseLabel":    { "type": "string", "default": "Pause" },
+		"playLabel":     { "type": "string", "default": "Play" },
+		"pausePosition": { "type": "string", "default": "right" },
+		"pauseSize":     { "type": "string", "default": "medium" }
+	},
+	"editorScript": "aac-editor",
+	"editorStyle":  "aac-editor-style",
+	"style":        "aac-style",
+	"viewScript":   "aac-view",
+	"render":       "file:./render.php"
+}
