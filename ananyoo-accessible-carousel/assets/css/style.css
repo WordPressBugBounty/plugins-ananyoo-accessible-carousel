@@ -548,7 +548,8 @@
 		position: static;
 		inset: auto;
 		display: flex;
-		flex-wrap: nowrap;          /* keep arrows + dots + play on ONE line */
+		flex-wrap: wrap;            /* allow pieces to reflow instead of colliding */
+		justify-content: space-between;
 		align-items: center;
 		gap: 0.5rem;
 		padding: 0.85rem 0.25rem 0.4rem;
@@ -605,6 +606,21 @@
 		font-size: 0.85rem;
 		white-space: nowrap;
 	}
+
+	/* Titled-tab navigation is far wider than plain dots, so on narrow
+	   screens give it its OWN full-width row beneath the arrows and counter
+	   instead of crushing it into a column between them. Only the titled
+	   centre is reordered (to the last row); plain dots keep their place
+	   between the arrows and the counter. Row 1 = arrows (left) and
+	   counter / play (right); row 2 = the centred tab list. */
+	.aac-carousel.aac-layout-overlay .aac-carousel__nav-center--titles {
+		order: 1;
+		flex: 1 0 100%;
+		margin-top: 0.6rem;
+	}
+	.aac-carousel__dots--titles {
+		justify-content: center;   /* centre the tab pills across the full row */
+	}
 }
 
 /* --- Skip-carousel link (WCAG 2.4.1 Bypass Blocks) -------------------- *
@@ -612,10 +628,9 @@
  * the top-left of the carousel so keyboard users can jump past it. */
 .aac-skip-link {
 	position: absolute;
-	left: 0.5rem;
+	left: -9999px;
 	top: 0.5rem;
 	z-index: 20;
-	transform: translateY( -160% );
 	background: #0E1B36;
 	color: #ffffff;
 	padding: 0.6rem 1rem;
@@ -623,14 +638,10 @@
 	font-size: 0.95rem;
 	font-weight: 600;
 	text-decoration: none;
-	opacity: 0;
-	pointer-events: none;
 }
 .aac-skip-link:focus,
 .aac-skip-link:focus-visible {
-	transform: translateY( 0 );
-	opacity: 1;
-	pointer-events: auto;
+	left: 0.5rem;
 	outline: 3px solid #ffffff;
 	outline-offset: 2px;
 }
@@ -643,17 +654,17 @@
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	min-width: 3ch;
+	min-width: 2.5ch;
 	margin-left: 0.5rem;
-	font-size: 0.85rem;
-	font-weight: 600;
-	color: #33404a;
+	padding: 0.15rem 0.55rem;
+	border-radius: 999px;
+	background: #0e1b36;
+	color: #ffffff;
+	font-size: 0.8rem;
+	font-weight: 700;
+	line-height: 1.4;
 	font-variant-numeric: tabular-nums;
 	white-space: nowrap;
-}
-.aac-carousel.aac-layout-overlay .aac-carousel__count {
-	color: #ffffff;
-	text-shadow: 0 1px 2px rgba( 0, 0, 0, 0.6 );
 }
 
 /* --- Windows High Contrast / forced-colors (WCAG 1.4.1, 2.4.7) -------- *
@@ -675,7 +686,7 @@
 		outline: 2px solid Highlight;
 	}
 	.aac-carousel__arrow > svg { forced-color-adjust: auto; }
-	.aac-carousel__count { color: CanvasText; }
+	.aac-carousel__count { forced-color-adjust: none; background: Canvas; color: CanvasText; border: 1px solid CanvasText; }
 	.aac-skip-link { background: Canvas; color: CanvasText; border: 1px solid CanvasText; }
 }
 

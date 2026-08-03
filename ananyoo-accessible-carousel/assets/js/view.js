@@ -104,7 +104,10 @@
 			dotsGroup.setAttribute( 'role', 'group' );
 			dotsGroup.setAttribute( 'aria-label', txt( 'choose', 'Choose slide to display' ) );
 			var useTitles = 'titles' === opts.dotStyle;
-			if ( useTitles ) { dotsGroup.classList.add( 'aac-carousel__dots--titles' ); }
+			if ( useTitles ) {
+				dotsGroup.classList.add( 'aac-carousel__dots--titles' );
+				navCenter.classList.add( 'aac-carousel__nav-center--titles' );
+			}
 			slides.forEach( function ( s, i ) {
 				var d = button( 'aac-carousel__dot' + ( useTitles ? ' aac-carousel__dot--title' : '' ), '' );
 				if ( useTitles ) {

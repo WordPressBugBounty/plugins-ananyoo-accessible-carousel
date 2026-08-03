@@ -3,7 +3,7 @@
  * Plugin Name:       Accessible Carousel & Slider – WCAG AA Compliant Slideshow
  * Plugin URI:        https://ananyoo.com/ananyoo-accessible-carousel-block-plugin/
  * Description:        WCAG 2.2 AA compliant carousel, slider & slideshow blocks: keyboard & screen-reader friendly, pause control, no autoplay, plus a card scroller.
- * Version:           2.7.0
+ * Version:           2.7.3
  * Requires at least: 6.5
  * Requires PHP:      7.4
  * Author:            Shivaji Mitra (Ananyoo)
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // No direct file access.
 }
 
-define( 'ANACB_VERSION', '2.7.0' );
+define( 'ANACB_VERSION', '2.7.3' );
 define( 'ANACB_PATH', plugin_dir_path( __FILE__ ) );
 define( 'ANACB_URL', plugin_dir_url( __FILE__ ) );
 define( 'ANACB_BASENAME', plugin_basename( __FILE__ ) );

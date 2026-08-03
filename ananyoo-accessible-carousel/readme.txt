@@ -4,7 +4,7 @@ Tags: accessibility, wcag, carousel, slider, slideshow
 Requires at least: 6.5
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 2.7.0
+Stable tag: 2.7.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -108,6 +108,19 @@ Yes. Slides display as a stacked, readable list when JavaScript is unavailable.
 9. The block-editor sidebar for the carousel: choose dots or a titled tab list, reading-time pacing, and the optional "View as list" and dyslexia-friendly reading toggles under "Accessibility options".
 
 == Changelog ==
+
+= 2.7.3 =
+* Fix: mobile control layout. On narrow screens the titled-tab navigation now gets its own full-width row beneath the arrows and counter instead of being squeezed into a cramped column, and the control bar reflows gracefully instead of letting the counter, dots and play button collide.
+* No breaking changes; existing carousels render exactly as before.
+
+= 2.7.2 =
+* Fix: the "Skip carousel" link is now hidden off-screen instead of with opacity, so its full white-on-navy contrast is reported correctly by automated tools (it was a false "low contrast" flag; the link was always readable on focus). Behaviour for keyboard and screen-reader users is unchanged.
+* No breaking changes; existing carousels render exactly as before.
+
+= 2.7.1 =
+* Fix: the visible "2 / 5" slide counter now sits in its own solid navy pill, so it passes WCAG 1.4.3 contrast on any background, including the overlay layout where it previously relied on white text over a light page (WCAG 1.4.3).
+* Fix: the counter now stays visible under Windows High Contrast / forced-colors, using the system Canvas and CanvasText colours with a border.
+* No breaking changes; existing carousels render exactly as before.
 
 = 2.7.0 =
 * New: full keyboard navigation for the carousel — Left/Right arrow keys move between slides and Home/End jump to the first and last slide (WAI-ARIA Authoring Practices). Typing in a field is never hijacked.
