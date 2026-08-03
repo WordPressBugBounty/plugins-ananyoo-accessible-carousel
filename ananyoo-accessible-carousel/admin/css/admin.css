@@ -201,3 +201,16 @@
 	outline: 3px solid var(--anacb-admin-focus-ring);
 	outline-offset: 2px;
 }
+
+/* --- Windows High Contrast / forced-colors (WCAG 1.4.1, 2.4.7) -------- *
+ * The About page focus ring, buttons and list bullets stay visible when the
+ * operating system overrides colours. */
+@media ( forced-colors: active ) {
+	.anacb-wrap a:focus-visible,
+	.anacb-wrap .anacb-btn:focus-visible {
+		outline: 3px solid Highlight;
+		outline-offset: 2px;
+	}
+	.anacb-card li::before { background: CanvasText; forced-color-adjust: none; }
+	.anacb-btn { border: 1px solid CanvasText; }
+}

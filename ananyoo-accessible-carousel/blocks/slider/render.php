@@ -100,6 +100,21 @@ if ( ! in_array( $anacb_pause_size, array( 'small', 'medium', 'large' ), true ) 
 	$anacb_pause_size = 'medium';
 }
 
+// Slide navigation style: plain dots, or a titled tab list (author choice).
+$anacb_dot_style = isset( $attributes['dotStyle'] ) ? (string) $attributes['dotStyle'] : 'dots';
+if ( ! in_array( $anacb_dot_style, array( 'dots', 'titles' ), true ) ) {
+	$anacb_dot_style = 'dots';
+}
+
+// Reading-time pacing: when on (and autoplay is on), each slide stays long
+// enough to read its own text rather than a fixed interval.
+$anacb_auto_time = isset( $attributes['autoTime'] ) ? (bool) $attributes['autoTime'] : true;
+
+// Opt-in visitor modes (off by default): a "View as list" reading mode and a
+// dyslexia-friendly text toggle. Their scripts/styles do nothing unless on.
+$anacb_reading_mode = ! empty( $attributes['readingMode'] );
+$anacb_dyslexia     = ! empty( $attributes['dyslexiaToggle'] );
+
 $anacb_wrapper_args = array(
 	'class'         => 'aac-carousel aac-layout-' . $anacb_layout . ' aac-anim-' . $anacb_animation,
 	'data-aac'      => '',
@@ -112,6 +127,16 @@ $anacb_wrapper_args = array(
 	'data-i18n-play'      => $anacb_play_label,
 	'data-pause-position' => $anacb_pause_position,
 	'data-pause-size'     => $anacb_pause_size,
+	'data-dot-style'      => $anacb_dot_style,
+	'data-auto-time'      => $anacb_auto_time ? 'true' : 'false',
+	'data-reading-mode'   => $anacb_reading_mode ? 'true' : 'false',
+	'data-dyslexia'       => $anacb_dyslexia ? 'true' : 'false',
+	'data-i18n-listview'      => __( 'View as list', 'ananyoo-accessible-carousel' ),
+	'data-i18n-carouselview'  => __( 'View as carousel', 'ananyoo-accessible-carousel' ),
+	'data-i18n-easyread'      => __( 'Easier reading', 'ananyoo-accessible-carousel' ),
+	'data-i18n-easyreadoff'   => __( 'Normal reading', 'ananyoo-accessible-carousel' ),
+	'data-i18n-slide'         => __( 'Slide', 'ananyoo-accessible-carousel' ),
+	'data-i18n-of'            => __( 'of', 'ananyoo-accessible-carousel' ),
 );
 if ( '' !== $anacb_style ) {
 	$anacb_wrapper_args['style'] = $anacb_style;
@@ -119,9 +144,12 @@ if ( '' !== $anacb_style ) {
 
 $anacb_wrapper = get_block_wrapper_attributes( $anacb_wrapper_args );
 ?>
+<?php $anacb_skip_id = wp_unique_id( 'aac-skip-' ); ?>
 <section <?php echo $anacb_wrapper; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped by get_block_wrapper_attributes(). ?> aria-roledescription="<?php esc_attr_e( 'carousel', 'ananyoo-accessible-carousel' ); ?>" aria-label="<?php echo esc_attr( $anacb_label ); ?>">
+	<a class="aac-skip-link" href="#<?php echo esc_attr( $anacb_skip_id ); ?>"><?php esc_html_e( 'Skip carousel', 'ananyoo-accessible-carousel' ); ?></a>
 	<ul class="aac-carousel__track">
 		<?php echo $content; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- inner slides rendered and escaped by their own render.php. ?>
 	</ul>
 	<p class="aac-carousel__status aac-visually-hidden" aria-live="polite" aria-atomic="true"></p>
+	<span id="<?php echo esc_attr( $anacb_skip_id ); ?>" tabindex="-1" class="aac-skip-target"></span>
 </section>

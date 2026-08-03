@@ -36,6 +36,91 @@
 	// Base URL for the bundled placeholder images (localised from PHP).
 	var IMG = ( window.AnacbData && window.AnacbData.imgBase ) || '';
 
+	/* ===================================================================== *
+	 * WCAG helpers for the in-editor "Accessibility check" panel.
+	 * These only READ the chosen values and show a pass/fail note; they never
+	 * change the design. Every result uses an icon AND text AND colour, so it
+	 * never relies on colour alone (WCAG 1.4.1).
+	 * ===================================================================== */
+	function hexToRgb( h ) {
+		if ( ! h ) { return null; }
+		h = String( h ).trim().replace( '#', '' );
+		if ( 3 === h.length ) { h = h.split( '' ).map( function ( c ) { return c + c; } ).join( '' ); }
+		if ( 6 !== h.length ) { return null; }
+		var n = parseInt( h, 16 );
+		if ( isNaN( n ) ) { return null; }
+		return [ ( n >> 16 ) & 255, ( n >> 8 ) & 255, n & 255 ];
+	}
+	function relLum( rgb ) {
+		var a = rgb.map( function ( v ) { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow( ( v + 0.055 ) / 1.055, 2.4 ); } );
+		return 0.2126 * a[0] + 0.7152 * a[1] + 0.0722 * a[2];
+	}
+	function contrastRatio( fg, bg ) {
+		var f = hexToRgb( fg ), b = hexToRgb( bg );
+		if ( ! f || ! b ) { return null; }
+		var l1 = relLum( f ), l2 = relLum( b ), hi = Math.max( l1, l2 ), lo = Math.min( l1, l2 );
+		return ( hi + 0.05 ) / ( lo + 0.05 );
+	}
+	// Convert a CSS size ('2rem', '18px', '1.4em') to px (16px root assumed).
+	function toPx( size ) {
+		if ( ! size ) { return 0; }
+		var m = String( size ).match( /([\d.]+)\s*(px|rem|em)?/ );
+		if ( ! m ) { return 0; }
+		var n = parseFloat( m[1] );
+		return ( m[2] && 'px' !== m[2] ) ? n * 16 : n;
+	}
+	// WCAG 1.4.3: large text (>=24px, or >=18.66px bold) needs 3:1, else 4.5:1.
+	function neededFor( sizePx, bold ) {
+		var big = sizePx >= 24 || ( bold && sizePx >= 18.66 );
+		return big ? 3 : 4.5;
+	}
+	function a11yIcon( ok ) {
+		var attrs = { width: 16, height: 16, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2.4, strokeLinecap: 'round', strokeLinejoin: 'round', 'aria-hidden': 'true', focusable: 'false', style: { flexShrink: 0, marginTop: '1px' } };
+		return ok
+			? el( 'svg', attrs, el( 'path', { d: 'M20 6 9 17l-5-5' } ) )
+			: el( 'svg', attrs, el( 'path', { d: 'M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z' } ), el( 'line', { x1: 12, y1: 9, x2: 12, y2: 13 } ), el( 'line', { x1: 12, y1: 17, x2: 12.01, y2: 17 } ) );
+	}
+	function a11yRow( ok, title, detail ) {
+		var box = {
+			display: 'flex', alignItems: 'flex-start', gap: '8px', margin: '0 0 8px', padding: '8px 10px',
+			borderRadius: '6px', border: '1px solid ' + ( ok ? '#8bd3a6' : '#efa9a4' ),
+			borderLeft: '4px solid ' + ( ok ? '#0a7d3c' : '#c0342d' ),
+			background: ok ? '#e7f5ec' : '#fdeaea', color: ok ? '#08542a' : '#8a1f1a',
+			fontSize: '12.5px', lineHeight: 1.4
+		};
+		return el( 'div', { style: box, role: ok ? null : 'note' },
+			a11yIcon( ok ),
+			el( 'span', null,
+				el( 'strong', null, title ),
+				detail ? el( 'span', { style: { display: 'block', fontWeight: 400, marginTop: '2px' } }, detail ) : null
+			)
+		);
+	}
+	// A live contrast result for one foreground/background pair.
+	function contrastRow( label, fg, bg, needed ) {
+		var r = contrastRatio( fg, bg );
+		if ( null === r ) {
+			return a11yRow( true, label, __( 'Using theme colours — set both to check here.', 'ananyoo-accessible-carousel' ) );
+		}
+		var ok = r >= needed;
+		var detail = __( 'Contrast', 'ananyoo-accessible-carousel' ) + ' ' + r.toFixed( 1 ) + ':1 — ' +
+			( ok ? __( 'passes WCAG AA', 'ananyoo-accessible-carousel' ) : ( __( 'too low, needs', 'ananyoo-accessible-carousel' ) + ' ' + needed + ':1' ) );
+		return a11yRow( ok, label, detail );
+	}
+	// Vague link phrases that fail WCAG 2.4.4 Link Purpose.
+	var ANACB_VAGUE = [ 'click here', 'read more', 'here', 'more', 'link', 'learn more', 'details', 'this', 'go' ];
+	function vagueLink( t ) {
+		t = ( t || '' ).trim().toLowerCase();
+		return '' !== t && ANACB_VAGUE.indexOf( t ) !== -1;
+	}
+	function a11yPanel( rows ) {
+		return el( PanelBody, { title: __( 'Accessibility check', 'ananyoo-accessible-carousel' ), initialOpen: false },
+			el( 'p', { style: { fontSize: '12px', color: '#50575e', margin: '0 0 10px' } },
+				__( 'Live checks for this block. Fix any items marked with a warning before publishing — every check is shown with an icon, wording and colour.', 'ananyoo-accessible-carousel' ) ),
+			rows
+		);
+	}
+
 	/* --- On-insert "Choose a layout" picker --------------------------------
 	 * When a parent block is first inserted (no inner blocks yet) we show a
 	 * Placeholder offering the three designed looks plus "Start blank". Picking
@@ -217,8 +302,14 @@
 						checked: a.autoplay,
 						onChange: function ( v ) { set( { autoplay: v } ); }
 					} ),
+					a.autoplay && el( ToggleControl, {
+						label: __( 'Reading-time pacing', 'ananyoo-accessible-carousel' ),
+						help: __( 'On: each slide stays long enough to read its own text (about 200 words a minute) so no slide advances too soon (WCAG 2.2.2). Off: use a fixed interval below.', 'ananyoo-accessible-carousel' ),
+						checked: a.autoTime,
+						onChange: function ( v ) { set( { autoTime: v } ); }
+					} ),
 					a.autoplay && el( RangeControl, {
-						label: __( 'Autoplay interval (seconds)', 'ananyoo-accessible-carousel' ),
+						label: a.autoTime ? __( 'Minimum time per slide (seconds)', 'ananyoo-accessible-carousel' ) : __( 'Autoplay interval (seconds)', 'ananyoo-accessible-carousel' ),
 						min: 4, max: 20,
 						value: Math.round( a.interval / 1000 ),
 						onChange: function ( v ) { set( { interval: v * 1000 } ); }
@@ -237,6 +328,16 @@
 						label: __( 'Show slide dots', 'ananyoo-accessible-carousel' ),
 						checked: a.showDots,
 						onChange: function ( v ) { set( { showDots: v } ); }
+					} ),
+					a.showDots && el( SelectControl, {
+						label: __( 'Slide navigation style', 'ananyoo-accessible-carousel' ),
+						value: a.dotStyle,
+						options: [
+							{ label: __( 'Dots', 'ananyoo-accessible-carousel' ), value: 'dots' },
+							{ label: __( 'Slide titles (tab list)', 'ananyoo-accessible-carousel' ), value: 'titles' }
+						],
+						help: __( 'Dots are compact; slide titles are easier to recognise and remember (WAI-ARIA Authoring Practices).', 'ananyoo-accessible-carousel' ),
+						onChange: function ( v ) { set( { dotStyle: v } ); }
 					} )
 				),
 				el(
@@ -292,6 +393,25 @@
 						],
 						help: __( 'All sizes keep at least a 44px touch target (WCAG 2.5.5).', 'ananyoo-accessible-carousel' ),
 						onChange: function ( v ) { set( { pauseSize: v } ); }
+					} )
+				),
+				el(
+					PanelBody,
+					{ title: __( 'Accessibility options', 'ananyoo-accessible-carousel' ), initialOpen: false },
+					el( 'p', { style: { fontSize: '12px', color: '#50575e', margin: '0 0 10px' } },
+						__( 'Optional visitor controls, off by default. Their small extra script and styles load only when switched on.', 'ananyoo-accessible-carousel' )
+					),
+					el( ToggleControl, {
+						label: __( 'Offer a "View as list" reading mode', 'ananyoo-accessible-carousel' ),
+						help: __( 'Adds a button that unfolds the carousel into a plain vertical list — helpful for cognitive, low-vision and motor users who prefer to read everything at once.', 'ananyoo-accessible-carousel' ),
+						checked: a.readingMode,
+						onChange: function ( v ) { set( { readingMode: v } ); }
+					} ),
+					el( ToggleControl, {
+						label: __( 'Offer a dyslexia-friendly reading toggle', 'ananyoo-accessible-carousel' ),
+						help: __( 'Adds a button that increases letter, word and line spacing and left-aligns the carousel text for easier reading.', 'ananyoo-accessible-carousel' ),
+						checked: a.dyslexiaToggle,
+						onChange: function ( v ) { set( { dyslexiaToggle: v } ); }
 					} )
 				)
 			);
@@ -479,10 +599,42 @@
 				]
 			},
 			el( 'p', { style: { fontSize: '12px', fontStyle: 'italic' } },
-				__( 'Keep box / button background and text contrast at 4.5:1 or higher (WCAG 1.4.3).', 'ananyoo-accessible-carousel' )
+				__( 'Live contrast results for these colours appear in the Accessibility check panel below (WCAG 1.4.3).', 'ananyoo-accessible-carousel' )
 			) );
 
-			var inspector = el( InspectorControls, null, imageControls, layoutControls, designControls, colorControls );
+			// --- Accessibility check rows (Slide) ---
+			var slBox  = a.overlayColor || '#10151c';
+			var slText = a.textColor || '#ffffff';
+			var slHead = a.headingColor || slText;
+			var slHeadPx = toPx( a.headingFontSize ) || 32; // hero headings are large by default
+			var slideRows = [
+				contrastRow( __( 'Text on box background', 'ananyoo-accessible-carousel' ), slText, slBox, 4.5 ),
+				contrastRow( __( 'Heading on box background', 'ananyoo-accessible-carousel' ), slHead, slBox, neededFor( slHeadPx, true ) )
+			];
+			if ( 'button' === a.ctaType ) {
+				if ( a.ctaBgColor && a.ctaTextColor ) {
+					slideRows.push( contrastRow( __( 'Button text on button', 'ananyoo-accessible-carousel' ), a.ctaTextColor, a.ctaBgColor, 4.5 ) );
+				} else {
+					slideRows.push( a11yRow( true, __( 'Button colours', 'ananyoo-accessible-carousel' ), __( 'Using theme colours — set both to check here.', 'ananyoo-accessible-carousel' ) ) );
+				}
+			}
+			if ( a.imageUrl ) {
+				if ( a.imageDecorative ) {
+					slideRows.push( a11yRow( true, __( 'Background image', 'ananyoo-accessible-carousel' ), __( 'Marked decorative — no alt text needed.', 'ananyoo-accessible-carousel' ) ) );
+				} else {
+					var slAlt = !! ( a.imageAlt && a.imageAlt.trim() );
+					slideRows.push( a11yRow( slAlt, __( 'Image alt text', 'ananyoo-accessible-carousel' ), slAlt ? __( 'Present.', 'ananyoo-accessible-carousel' ) : __( 'Add alt text, or mark the image decorative.', 'ananyoo-accessible-carousel' ) ) );
+				}
+			}
+			var slHeadOk = !! ( a.heading && a.heading.trim() );
+			slideRows.push( a11yRow( slHeadOk, __( 'Slide heading', 'ananyoo-accessible-carousel' ), slHeadOk ? __( 'Present.', 'ananyoo-accessible-carousel' ) : __( 'A heading helps screen-reader users scan slides.', 'ananyoo-accessible-carousel' ) ) );
+			if ( a.buttonUrl && ! ( a.buttonText && a.buttonText.trim() ) ) {
+				slideRows.push( a11yRow( false, __( 'Button text', 'ananyoo-accessible-carousel' ), __( 'The button has a link but no text.', 'ananyoo-accessible-carousel' ) ) );
+			} else if ( vagueLink( a.buttonText ) ) {
+				slideRows.push( a11yRow( false, __( 'Button text', 'ananyoo-accessible-carousel' ), __( 'Vague link text — say where it goes (WCAG 2.4.4).', 'ananyoo-accessible-carousel' ) ) );
+			}
+
+			var inspector = el( InspectorControls, null, imageControls, layoutControls, designControls, colorControls, a11yPanel( slideRows ) );
 
 			var headingStyle = { color: a.textColor };
 			if ( a.headingColor ) { headingStyle.color = a.headingColor; }
@@ -762,11 +914,44 @@
 					]
 				},
 				el( 'p', { style: { fontSize: '12px', fontStyle: 'italic' } },
-					__( 'When the CTA is a button, keep its background and text contrast at 4.5:1 or higher (WCAG 1.4.3).', 'ananyoo-accessible-carousel' )
+					__( 'Live contrast results for these colours appear in the Accessibility check panel below (WCAG 1.4.3).', 'ananyoo-accessible-carousel' )
 				)
 			);
 
-			var inspector = el( InspectorControls, null, imageControls, contentControls, designControls, cardColors );
+			// --- Accessibility check rows (Card) ---
+			var cdBg   = ( a.style && a.style.color && a.style.color.background ) || '';
+			var cdText = ( a.style && a.style.color && a.style.color.text ) || '';
+			var cdHead = a.headingColor || cdText;
+			var cdHeadPx = toPx( a.headingFontSize ) || 20; // card headings are bold; ~20px default
+			var cardRows = [];
+			if ( cdBg && cdText ) {
+				cardRows.push( contrastRow( __( 'Text on card background', 'ananyoo-accessible-carousel' ), cdText, cdBg, 4.5 ) );
+			} else {
+				cardRows.push( a11yRow( true, __( 'Card text colour', 'ananyoo-accessible-carousel' ), __( 'Using theme colours — set the card background and text to check here.', 'ananyoo-accessible-carousel' ) ) );
+			}
+			if ( cdBg && cdHead ) {
+				cardRows.push( contrastRow( __( 'Heading on card background', 'ananyoo-accessible-carousel' ), cdHead, cdBg, neededFor( cdHeadPx, true ) ) );
+			}
+			if ( 'button' === a.ctaType ) {
+				cardRows.push( contrastRow( __( 'Button text on button', 'ananyoo-accessible-carousel' ), a.ctaTextColor || '#ffffff', a.ctaBgColor || '#1a1f36', 4.5 ) );
+			}
+			if ( a.imageUrl ) {
+				if ( a.imageDecorative ) {
+					cardRows.push( a11yRow( true, __( 'Card image', 'ananyoo-accessible-carousel' ), __( 'Marked decorative — no alt text needed.', 'ananyoo-accessible-carousel' ) ) );
+				} else {
+					var cdAlt = !! ( a.imageAlt && a.imageAlt.trim() );
+					cardRows.push( a11yRow( cdAlt, __( 'Image alt text', 'ananyoo-accessible-carousel' ), cdAlt ? __( 'Present.', 'ananyoo-accessible-carousel' ) : __( 'Add alt text, or mark the image decorative.', 'ananyoo-accessible-carousel' ) ) );
+				}
+			}
+			var cdHeadOk = !! ( a.heading && a.heading.trim() );
+			cardRows.push( a11yRow( cdHeadOk, __( 'Card heading', 'ananyoo-accessible-carousel' ), cdHeadOk ? __( 'Present.', 'ananyoo-accessible-carousel' ) : __( 'A heading helps screen-reader users scan cards.', 'ananyoo-accessible-carousel' ) ) );
+			if ( a.linkUrl && ! ( a.linkText && a.linkText.trim() ) ) {
+				cardRows.push( a11yRow( false, __( 'Link text', 'ananyoo-accessible-carousel' ), __( 'The card has a link but no text.', 'ananyoo-accessible-carousel' ) ) );
+			} else if ( vagueLink( a.linkText ) ) {
+				cardRows.push( a11yRow( false, __( 'Link text', 'ananyoo-accessible-carousel' ), __( 'Vague link text — say where it goes (WCAG 2.4.4).', 'ananyoo-accessible-carousel' ) ) );
+			}
+
+			var inspector = el( InspectorControls, null, imageControls, contentControls, designControls, cardColors, a11yPanel( cardRows ) );
 
 			var media = a.imageUrl
 				? el( 'img', { className: 'aac-card__media', src: a.imageUrl, alt: '' } )

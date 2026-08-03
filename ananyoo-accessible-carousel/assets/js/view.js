@@ -38,6 +38,10 @@
 			loop:     root.getAttribute( 'data-loop' ) !== 'false',
 			arrows:   root.getAttribute( 'data-arrows' ) !== 'false',
 			dots:     root.getAttribute( 'data-dots' ) !== 'false',
+			dotStyle: root.getAttribute( 'data-dot-style' ) === 'titles' ? 'titles' : 'dots',
+			autoTime: root.getAttribute( 'data-auto-time' ) !== 'false',
+			readingMode: root.getAttribute( 'data-reading-mode' ) === 'true',
+			dyslexia:    root.getAttribute( 'data-dyslexia' ) === 'true',
 			pausePos:  root.getAttribute( 'data-pause-position' ) || 'right',
 			pauseSize: root.getAttribute( 'data-pause-size' ) || 'medium'
 		};
@@ -61,6 +65,16 @@
 		navCenter.className = 'aac-carousel__nav-center';
 		var navRight = document.createElement( 'div' );
 		navRight.className = 'aac-carousel__nav-right';
+
+		// Visible slide-position indicator (e.g. "2 / 5"). The screen-reader
+		// announcement is handled by the polite live region, so this is
+		// aria-hidden to avoid a double announcement — it is here to help
+		// sighted, low-vision and cognitive users see where they are.
+		var countEl = document.createElement( 'span' );
+		countEl.className = 'aac-carousel__count';
+		countEl.setAttribute( 'aria-hidden', 'true' );
+		countEl.textContent = '1 / ' + slides.length;
+		navRight.appendChild( countEl );
 
 		var prevBtn, nextBtn;
 		if ( opts.arrows ) {
@@ -89,9 +103,19 @@
 			dotsGroup.className = 'aac-carousel__dots';
 			dotsGroup.setAttribute( 'role', 'group' );
 			dotsGroup.setAttribute( 'aria-label', txt( 'choose', 'Choose slide to display' ) );
+			var useTitles = 'titles' === opts.dotStyle;
+			if ( useTitles ) { dotsGroup.classList.add( 'aac-carousel__dots--titles' ); }
 			slides.forEach( function ( s, i ) {
-				var d = button( 'aac-carousel__dot', '' );
-				d.setAttribute( 'aria-label', txt( 'slide', 'Slide' ) + ' ' + ( i + 1 ) );
+				var d = button( 'aac-carousel__dot' + ( useTitles ? ' aac-carousel__dot--title' : '' ), '' );
+				if ( useTitles ) {
+					var h = s.querySelector( '.aac-slide__heading' );
+					var title = h ? h.textContent.trim() : '';
+					if ( ! title ) { title = txt( 'slide', 'Slide' ) + ' ' + ( i + 1 ); }
+					d.textContent = title;
+					d.setAttribute( 'aria-label', title );
+				} else {
+					d.setAttribute( 'aria-label', txt( 'slide', 'Slide' ) + ' ' + ( i + 1 ) );
+				}
 				d.addEventListener( 'click', function () { stop( true ); go( i, true ); syncStop(); } );
 				dotsGroup.appendChild( d );
 				dots.push( d );
@@ -166,10 +190,20 @@
 				disable( nextBtn, index === n - 1 );
 			}
 
+			// Visible position indicator always tracks the current slide.
+			if ( countEl ) {
+				countEl.textContent = ( index + 1 ) + ' / ' + n;
+			}
+
 			// Announce only for user-initiated changes; stay silent on autoplay.
+			// Speak the slide's own title so the change is meaningful, not just
+			// "Item 2 of 5" (ARIA live region; WCAG 4.1.3 Status Messages).
 			if ( announce && status ) {
-				status.textContent = txt( 'item', 'Item' ) + ' ' + ( index + 1 ) +
-					' ' + txt( 'of', 'of' ) + ' ' + n;
+				var msg = txt( 'slide', 'Slide' ) + ' ' + ( index + 1 ) + ' ' + txt( 'of', 'of' ) + ' ' + n;
+				var head = slides[ index ].querySelector( '.aac-slide__heading' );
+				var htitle = head ? head.textContent.trim() : '';
+				if ( htitle ) { msg += ': ' + htitle; }
+				status.textContent = msg;
 			}
 		}
 
@@ -208,12 +242,26 @@
 		}
 
 		// --- Auto-rotation ---------------------------------------------------
+		// Time (ms) the current slide stays before auto-advancing. With
+		// reading-time pacing on, it is derived from the slide's own text
+		// (~200 words/minute plus a base minimum) so no slide advances before
+		// it can be read (WCAG 2.2.2); otherwise the fixed interval is used.
+		function slideTime() {
+			if ( ! opts.autoTime ) { return opts.interval; }
+			var words = ( slides[ index ].textContent || '' ).trim().split( /\s+/ ).filter( Boolean ).length;
+			var ms = 2500 + Math.round( ( words / 200 ) * 60000 );
+			return Math.max( opts.interval, Math.min( ms, 20000 ) );
+		}
+		function schedule() {
+			window.clearTimeout( timer );
+			timer = window.setTimeout( function () { go( index + 1, false ); schedule(); }, slideTime() );
+		}
 		function start() {
 			if ( ! opts.autoplay || userStopped || timer ) { return; }
-			timer = window.setInterval( function () { go( index + 1, false ); }, opts.interval );
+			schedule();
 		}
 		function stop( byUser ) {
-			if ( timer ) { window.clearInterval( timer ); timer = null; }
+			if ( timer ) { window.clearTimeout( timer ); timer = null; }
 			if ( byUser ) { userStopped = true; }
 		}
 		function syncStop() {
@@ -232,9 +280,9 @@
 		}
 
 		// Pause on hover and focus; resume only if the user did not stop it.
-		root.addEventListener( 'mouseenter', function () { if ( timer ) { window.clearInterval( timer ); timer = null; syncStop(); } } );
+		root.addEventListener( 'mouseenter', function () { if ( timer ) { window.clearTimeout( timer ); timer = null; syncStop(); } } );
 		root.addEventListener( 'mouseleave', resume );
-		root.addEventListener( 'focusin', function () { if ( timer ) { window.clearInterval( timer ); timer = null; syncStop(); } } );
+		root.addEventListener( 'focusin', function () { if ( timer ) { window.clearTimeout( timer ); timer = null; syncStop(); } } );
 		root.addEventListener( 'focusout', function ( e ) { if ( ! root.contains( e.relatedTarget ) ) { resume(); } } );
 		function resume() { if ( opts.autoplay && ! userStopped && ! timer ) { start(); syncStop(); } }
 
@@ -247,6 +295,75 @@
 			if ( Math.abs( dx ) > 40 ) { stop( true ); go( index + ( dx < 0 ? 1 : -1 ), true ); syncStop(); }
 			sx = null;
 		}, { passive: true } );
+
+		// --- Keyboard: Left/Right move slides; Home/End jump first/last -------
+		// Follows the WAI-ARIA Authoring Practices for carousels. The keys are
+		// ignored when focus is in a form field, so typing is never hijacked.
+		root.addEventListener( 'keydown', function ( e ) {
+			var t = e.target;
+			var tag = t && t.tagName ? t.tagName.toLowerCase() : '';
+			if ( 'input' === tag || 'textarea' === tag || 'select' === tag || ( t && t.isContentEditable ) ) { return; }
+			var handled = true;
+			if ( 'ArrowLeft' === e.key ) { go( index - 1, true ); }
+			else if ( 'ArrowRight' === e.key ) { go( index + 1, true ); }
+			else if ( 'Home' === e.key ) { go( 0, true ); }
+			else if ( 'End' === e.key ) { go( slides.length - 1, true ); }
+			else { handled = false; }
+			if ( handled ) { stop( true ); syncStop(); e.preventDefault(); }
+		} );
+
+		// --- Opt-in visitor modes: "View as list" and "Easier reading" -------
+		// Only built when the author turned them on; off until the visitor
+		// presses the button, so the default carousel is unchanged.
+		if ( opts.readingMode || opts.dyslexia ) {
+			var tools = document.createElement( 'div' );
+			tools.className = 'aac-carousel__tools';
+
+			if ( opts.readingMode ) {
+				var listBtn = document.createElement( 'button' );
+				listBtn.type = 'button';
+				listBtn.className = 'aac-carousel__mode aac-carousel__mode--list';
+				listBtn.setAttribute( 'aria-pressed', 'false' );
+				listBtn.textContent = txt( 'listview', 'View as list' );
+				listBtn.addEventListener( 'click', function () {
+					var on = root.classList.toggle( 'aac-reading-list' );
+					listBtn.setAttribute( 'aria-pressed', on ? 'true' : 'false' );
+					listBtn.textContent = on ? txt( 'carouselview', 'View as carousel' ) : txt( 'listview', 'View as list' );
+					if ( on ) {
+						stop( true );
+						slides.forEach( function ( s ) {
+							s.classList.remove( 'in-transition' );
+							s.removeAttribute( 'aria-hidden' );
+							setSlideFocusable( s, true );
+						} );
+					} else {
+						slides.forEach( function ( s, i ) {
+							if ( i === index ) { s.removeAttribute( 'aria-hidden' ); setSlideFocusable( s, true ); }
+							else { s.setAttribute( 'aria-hidden', 'true' ); setSlideFocusable( s, false ); }
+						} );
+					}
+				} );
+				tools.appendChild( listBtn );
+			}
+
+			if ( opts.dyslexia ) {
+				var dysBtn = document.createElement( 'button' );
+				dysBtn.type = 'button';
+				dysBtn.className = 'aac-carousel__mode aac-carousel__mode--dyslexia';
+				dysBtn.setAttribute( 'aria-pressed', 'false' );
+				dysBtn.textContent = txt( 'easyread', 'Easier reading' );
+				dysBtn.addEventListener( 'click', function () {
+					var on = root.classList.toggle( 'aac-dyslexia' );
+					dysBtn.setAttribute( 'aria-pressed', on ? 'true' : 'false' );
+					dysBtn.textContent = on ? txt( 'easyreadoff', 'Normal reading' ) : txt( 'easyread', 'Easier reading' );
+				} );
+				tools.appendChild( dysBtn );
+			}
+
+			var skipEl = root.querySelector( '.aac-skip-link' );
+			if ( skipEl && skipEl.nextSibling ) { root.insertBefore( tools, skipEl.nextSibling ); }
+			else { root.insertBefore( tools, root.firstChild ); }
+		}
 
 		// --- Helpers ---------------------------------------------------------
 		function button( cls, glyph ) {

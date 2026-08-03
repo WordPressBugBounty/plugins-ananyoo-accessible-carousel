@@ -202,3 +202,17 @@
 .aac-scroller__link--sm { padding: 0.4rem 0.9rem;  font-size: 0.85rem; }
 .aac-scroller__link--md { padding: 0.55rem 1.15rem; font-size: 0.95rem; }
 .aac-scroller__link--lg { padding: 0.75rem 1.5rem; font-size: 1.1rem; }
+
+/* --- Windows High Contrast / forced-colors (WCAG 1.4.1, 2.4.7) -------- *
+ * Keep the card, viewport and control focus rings visible when the OS
+ * overrides colours. */
+@media ( forced-colors: active ) {
+	.aac-scroller__viewport:focus-visible,
+	.aac-scroller__card:focus-visible,
+	.aac-scroller__btn:focus-visible,
+	.aac-scroller__link:focus-visible,
+	.aac-scroller__link--button:focus-visible {
+		outline: 3px solid Highlight;
+		outline-offset: 2px;
+	}
+}

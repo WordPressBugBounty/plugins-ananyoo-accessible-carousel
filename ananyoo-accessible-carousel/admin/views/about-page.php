@@ -18,13 +18,17 @@ $anacb_demo_url    = 'https://showcase.ananyoo.com/accessible-carousel/';
 $anacb_home_url    = 'https://ananyoo.com/ananyoo-accessible-carousel-block-plugin/';
 $anacb_ananyoo_url = 'https://ananyoo.com';
 $anacb_support_url = 'https://wordpress.org/support/plugin/ananyoo-accessible-carousel/';
+
+// Reusable screen-reader hint for links that open a new browser tab (WCAG 3.2.5 / G201).
+$anacb_newtab = '<span class="screen-reader-text"> ' . esc_html__( '(opens in a new tab)', 'ananyoo-accessible-carousel' ) . '</span>';
 ?>
 <div class="wrap anacb-wrap">
 
 	<?php // WordPress inserts admin notices right after this marker, so they appear above the header instead of inside it. ?>
 	<hr class="wp-header-end" style="display:none;">
 
-	<header class="anacb-header" role="banner">
+	<?php // A plain container, not a <header role="banner">, so it does not add a second banner landmark to the admin screen (WCAG 1.3.1). ?>
+	<div class="anacb-header">
 		<h1 class="anacb-title">
 			<img src="<?php echo esc_url( ANACB_URL . 'assets/ananyoo-logo.jpg' ); ?>"
 			     alt="<?php esc_attr_e( 'Ananyoo — Accessibility Ready Themes', 'ananyoo-accessible-carousel' ); ?>"
@@ -49,14 +53,16 @@ $anacb_support_url = 'https://wordpress.org/support/plugin/ananyoo-accessible-ca
 			);
 			?>
 		</p>
-	</header>
+	</div>
 
 	<div class="anacb-actions">
 		<a class="anacb-btn" href="<?php echo esc_url( $anacb_demo_url ); ?>" target="_blank" rel="noopener noreferrer">
 			<?php esc_html_e( 'View the live demo', 'ananyoo-accessible-carousel' ); ?>
+			<?php echo $anacb_newtab; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in $anacb_newtab. ?>
 		</a>
 		<a class="anacb-btn anacb-btn--secondary" href="<?php echo esc_url( $anacb_home_url ); ?>" target="_blank" rel="noopener noreferrer">
 			<?php esc_html_e( 'Documentation', 'ananyoo-accessible-carousel' ); ?>
+			<?php echo $anacb_newtab; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in $anacb_newtab. ?>
 		</a>
 	</div>
 
@@ -104,20 +110,23 @@ $anacb_support_url = 'https://wordpress.org/support/plugin/ananyoo-accessible-ca
 			<h2 id="anacb-c-a11y"><?php esc_html_e( 'Accessibility built in', 'ananyoo-accessible-carousel' ); ?></h2>
 			<ul>
 				<li><?php esc_html_e( 'No autoplay; an explicit pause / play control where motion is used.', 'ananyoo-accessible-carousel' ); ?></li>
-				<li><?php esc_html_e( 'Full keyboard operation with a logical focus order (Previous / Next reachable first).', 'ananyoo-accessible-carousel' ); ?></li>
-				<li><?php esc_html_e( 'Screen-reader labels and a polite live region for slide changes.', 'ananyoo-accessible-carousel' ); ?></li>
+				<li><?php esc_html_e( 'Full keyboard operation: Previous / Next reachable first, plus Left / Right arrow keys to change slides and Home / End to jump to the first or last slide.', 'ananyoo-accessible-carousel' ); ?></li>
+				<li><?php esc_html_e( 'Screen-reader labels and a polite live region that announces each slide by its title.', 'ananyoo-accessible-carousel' ); ?></li>
+				<li><?php esc_html_e( 'An in-editor Accessibility check flags weak colour contrast, missing alt text and vague button text as you build, with a live WCAG contrast readout.', 'ananyoo-accessible-carousel' ); ?></li>
+				<li><?php esc_html_e( 'A visible slide counter and a "Skip carousel" link for keyboard users, plus Windows High Contrast (forced-colors) support.', 'ananyoo-accessible-carousel' ); ?></li>
 				<li><?php esc_html_e( 'Non-visible slides are removed from the tab order, so there is no hidden focus trap.', 'ananyoo-accessible-carousel' ); ?></li>
 				<li><?php esc_html_e( 'Honours the "reduce motion" setting and uses 44px minimum touch targets.', 'ananyoo-accessible-carousel' ); ?></li>
+				<li><?php esc_html_e( 'Optional, off-by-default visitor modes: a "View as list" reading mode and a dyslexia-friendly reading toggle.', 'ananyoo-accessible-carousel' ); ?></li>
 			</ul>
 		</section>
 
 		<section class="anacb-card" aria-labelledby="anacb-c-links">
 			<h2 id="anacb-c-links"><?php esc_html_e( 'Help &amp; more', 'ananyoo-accessible-carousel' ); ?></h2>
 			<ul>
-				<li><a href="<?php echo esc_url( $anacb_demo_url ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Live demo', 'ananyoo-accessible-carousel' ); ?></a></li>
-				<li><a href="<?php echo esc_url( $anacb_home_url ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Plugin home &amp; documentation', 'ananyoo-accessible-carousel' ); ?></a></li>
-				<li><a href="<?php echo esc_url( $anacb_support_url ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Support forum', 'ananyoo-accessible-carousel' ); ?></a></li>
-				<li><a href="<?php echo esc_url( $anacb_ananyoo_url ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'More accessibility work from Ananyoo', 'ananyoo-accessible-carousel' ); ?></a></li>
+				<li><a href="<?php echo esc_url( $anacb_demo_url ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Live demo', 'ananyoo-accessible-carousel' ); ?><?php echo $anacb_newtab; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in $anacb_newtab. ?></a></li>
+				<li><a href="<?php echo esc_url( $anacb_home_url ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Plugin home &amp; documentation', 'ananyoo-accessible-carousel' ); ?><?php echo $anacb_newtab; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in $anacb_newtab. ?></a></li>
+				<li><a href="<?php echo esc_url( $anacb_support_url ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Support forum', 'ananyoo-accessible-carousel' ); ?><?php echo $anacb_newtab; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in $anacb_newtab. ?></a></li>
+				<li><a href="<?php echo esc_url( $anacb_ananyoo_url ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'More accessibility work from Ananyoo', 'ananyoo-accessible-carousel' ); ?><?php echo $anacb_newtab; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in $anacb_newtab. ?></a></li>
 			</ul>
 		</section>
 

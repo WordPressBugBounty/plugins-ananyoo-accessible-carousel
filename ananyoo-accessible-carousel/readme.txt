@@ -2,9 +2,9 @@
 Contributors: anblik
 Tags: accessibility, wcag, carousel, slider, slideshow
 Requires at least: 6.5
-Tested up to: 7.0.1
+Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 2.5.6
+Stable tag: 2.7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -15,6 +15,16 @@ WCAG AA compliant carousel, slider & slideshow blocks: keyboard & screen-reader 
 **Accessible Carousel & Slider** gives the WordPress block editor two accessibility-first blocks — a hero carousel / slider and a native card scroller — built to WCAG Level AA. Use it as an accessible carousel, slider, or slideshow that is fully keyboard-operable, screen-reader friendly, and responsive, with an always-visible pause control and no forced autoplay. Both are real Gutenberg blocks, so there are no shortcodes and nothing is hidden from assistive technology, plus ready-made patterns you can insert and edit.
 
 **Live demo:** [Try the accessible carousel & slider demo »](https://showcase.ananyoo.com/accessible-carousel/)
+
+**New in this version**
+
+* An in-editor **Accessibility check** with a live WCAG colour-contrast pass/fail readout for every colour pair, plus alt-text, heading and button-text checks — so you catch problems while you build.
+* **Full keyboard control**: Left/Right arrow keys change slides and Home/End jump to the first/last slide.
+* Slide changes are **announced by title** to screen readers, not just "Item 2 of 5".
+* Choose **dots or a titled tab list** for slide navigation, a visible **slide counter**, and a **"Skip carousel"** link.
+* **Reading-time pacing** for autoplay so a slide is never advanced before it can be read (autoplay stays off by default).
+* Optional, off-by-default visitor modes: a **"View as list" reading mode** and a **dyslexia-friendly reading** toggle.
+* **Windows High Contrast** (forced-colors) support throughout.
 
 **Hero carousel** (built to the W3C/WAI Carousels tutorial): each slide has a background image and a solid "contrast box" holding a heading, a paragraph, and an optional button, placed left, right, or bottom. The solid box guarantees readable text contrast over any image. No autoplay by default; when enabled, a configurable pause/stop control is always shown.
 
@@ -27,8 +37,12 @@ WCAG AA compliant carousel, slider & slideshow blocks: keyboard & screen-reader 
 * Carousel is a labelled region containing a semantic list of slides; with JavaScript off it degrades to a readable list.
 * Controls are real buttons, fully keyboard operable, with no keyboard trap.
 * Keyboard focus is never moved by next/previous or by auto-advance.
-* A visually hidden polite live region announces "Item x of y" on user-initiated changes; auto-rotation stays silent so it does not interrupt screen reader users.
-* No autoplay by default; when enabled, a stop/start control is always provided (WCAG 2.2.2) and rotation pauses on hover and focus.
+* A polite live region announces the new slide by title (e.g. "Slide 2 of 5: …") on user-initiated changes; auto-rotation stays silent so it does not interrupt screen reader users.
+* Full keyboard control: Left/Right arrow keys change slides and Home/End jump to the first/last slide, in addition to the on-screen buttons.
+* A visible "2 / 5" slide-position indicator, plus an in-editor Accessibility check that flags weak colour contrast, missing alt text and vague button text as you build.
+* Choose dots or a titled tab-list for slide navigation, and a "Skip carousel" link (WCAG 2.4.1) for keyboard users.
+* Optional, off-by-default visitor modes: a "View as list" reading mode and a dyslexia-friendly reading toggle.
+* No autoplay by default; when enabled, a stop/start control is always provided (WCAG 2.2.2), rotation pauses on hover and focus, and reading-time pacing can give each slide enough time to be read.
 * Transition animations (fade or slide) are disabled automatically under prefers-reduced-motion.
 * Background images are decorative by default, with a real alt-text option when the image is meaningful.
 * Solid contrast box, 44px control targets, and a high-visibility focus indicator.
@@ -88,8 +102,31 @@ Yes. Slides display as a stacked, readable list when JavaScript is unavailable.
 3. The six bundled patterns in the "Accessible Carousel" category of the inserter.
 4. A front-end hero carousel: a labelled region with prev/next, dots, and an always-present pause control when autoplay is on.
 5. A front-end card scroller: a native scroll-snap row of cards, keyboard and screen-reader friendly.
+6. The in-editor Accessibility check: live WCAG colour-contrast pass/fail for each colour pair, plus alt-text and heading checks, shown as you build a slide.
+7. New front-end options: a titled tab navigation, a visible "2 / 5" slide counter, a "Skip carousel" link, and the optional "View as list" and "Easier reading" visitor toggles.
+8. The plugin's own accessible "How to use" admin page: a keyboard- and screen-reader-friendly help screen with a visible focus ring, semantic headings and contrast-checked colours.
+9. The block-editor sidebar for the carousel: choose dots or a titled tab list, reading-time pacing, and the optional "View as list" and dyslexia-friendly reading toggles under "Accessibility options".
 
 == Changelog ==
+
+= 2.7.0 =
+* New: full keyboard navigation for the carousel — Left/Right arrow keys move between slides and Home/End jump to the first and last slide (WAI-ARIA Authoring Practices). Typing in a field is never hijacked.
+* New: slide-change announcements now speak the slide's own title (for example "Slide 2 of 5: Designed to WCAG 2.2 AA") instead of just a number, so the change is meaningful (WCAG 4.1.3).
+* New: choose your slide navigation — keep the compact dots, or switch to a titled tab list that shows each slide's heading (easier to recognise). Dots stay the default.
+* New: reading-time pacing for autoplay — when autoplay is on, each slide can stay long enough to read its own text (about 200 words a minute) instead of a fixed interval, so nothing advances too soon (WCAG 2.2.2). Autoplay itself stays off by default.
+* New (opt-in): a visitor "View as list" reading mode that unfolds the carousel into a plain vertical list for people who prefer to read everything at once.
+* New (opt-in): a visitor "Easier reading" toggle that increases letter, word and line spacing and left-aligns the carousel text for dyslexia-friendly reading.
+* The two visitor modes are off by default and their small extra script/styles apply only when a site owner switches them on, so the default carousel stays lean.
+* No breaking changes; existing carousels render exactly as before.
+
+= 2.6.0 =
+* New: a live "Accessibility check" panel in the editor for the Hero Slide and Scroller Card blocks. It checks, as you edit, the WCAG colour contrast of every colour pair (text on box/card background, heading on background, and button text on its button), whether the image has alt text or is marked decorative, whether the heading is filled in, and whether the button/link text is meaningful (WCAG 2.4.4). Each result is shown with an icon, wording and colour, so it never relies on colour alone (WCAG 1.4.1).
+* New: the colour-contrast check uses the correct WCAG 1.4.3 threshold automatically — 3:1 for large or bold headings, 4.5:1 for body text.
+* New: a visible "2 / 5" slide-position indicator on the carousel, alongside the existing screen-reader announcement (helps low-vision and cognitive users). It is aria-hidden to avoid a double announcement.
+* New: a "Skip carousel" link (hidden until focused) so keyboard users can jump past the carousel (WCAG 2.4.1 Bypass Blocks).
+* New: Windows High Contrast / forced-colors support for the carousel, card scroller and the admin page — focus rings, the active dot and controls stay visible when the OS overrides colours.
+* Backend: the plugin's "How to use" admin page no longer adds a second banner landmark, and every link that opens a new tab now says so to screen-reader users (WCAG G201).
+* No breaking changes; existing carousels and cards render exactly as before.
 
 = 2.5.6 =
 * New: added a "Settings" link on the Plugins screen that opens the plugin's Accessible Carousel dashboard, next to the existing "How to use" link.
