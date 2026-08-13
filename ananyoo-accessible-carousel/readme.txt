@@ -4,7 +4,7 @@ Tags: accessibility, wcag, carousel, slider, slideshow
 Requires at least: 6.5
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 2.7.3
+Stable tag: 2.7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -108,6 +108,13 @@ Yes. Slides display as a stacked, readable list when JavaScript is unavailable.
 9. The block-editor sidebar for the carousel: choose dots or a titled tab list, reading-time pacing, and the optional "View as list" and dyslexia-friendly reading toggles under "Accessibility options".
 
 == Changelog ==
+
+= 2.7.4 =
+* Fix: with autoplay on, the stop/start control now reads "Pause" from the moment the carousel loads. Earlier it wrongly read "Play" until the first hover, even though the slideshow was already rotating. Props @tonfarbe for the report.
+* Fix: moving the mouse over the carousel (arrows, dots or the slide itself) no longer flips the Pause/Play control. Hovering still quietly pauses the rotation (WCAG 2.2.2), but the control now shows only the state the visitor chose and changes only when the visitor acts on a control.
+* Fix: clicking "Pause" while the mouse was inside the carousel could restart the slideshow instead of stopping it (same root cause). The control now toggles the visitor's chosen state reliably.
+* Improvement: auto-rotation no longer resumes on mouse-leave while keyboard focus is still inside the carousel.
+* No breaking changes; existing carousels render exactly as before.
 
 = 2.7.3 =
 * Fix: mobile control layout. On narrow screens the titled-tab navigation now gets its own full-width row beneath the arrows and counter instead of being squeezed into a cramped column, and the control bar reflows gracefully instead of letting the counter, dots and play button collide.

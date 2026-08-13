@@ -143,7 +143,11 @@
 			stopBtn.appendChild( pIcon );
 			stopBtn.appendChild( pLabel );
 			stopBtn.addEventListener( 'click', function () {
-				if ( timer ) { stop( true ); } else { userStopped = false; start(); }
+				// Toggle the visitor's chosen state, not the transient timer:
+				// while hovering, the timer is already held, so a timer check
+				// here would wrongly restart rotation when the visitor is
+				// trying to stop it.
+				if ( userStopped ) { userStopped = false; start(); } else { stop( true ); }
 				syncStop();
 			} );
 			var pauseZone = navRight;
@@ -269,7 +273,13 @@
 		}
 		function syncStop() {
 			if ( ! stopBtn ) { return; }
-			var playing = !! timer;
+			// The control reflects the visitor's CHOSEN state (auto-rotation on
+			// or off), never the transient hover/focus hold. So it reads
+			// "Pause" from the moment the carousel loads with autoplay, and
+			// flips only when the visitor acts (stop/start button, arrows,
+			// dots, keyboard, swipe) — hovering must not toggle a control the
+			// visitor did not touch.
+			var playing = ! userStopped;
 			// Visible text label (e.g. "Pause" / "Play"). This text is also the
 			// button's accessible name — the icon is aria-hidden and no aria-label
 			// overrides it — so the visible label and the accessible name always
@@ -282,12 +292,18 @@
 			stopBtn.classList.toggle( 'is-playing', playing );
 		}
 
-		// Pause on hover and focus; resume only if the user did not stop it.
-		root.addEventListener( 'mouseenter', function () { if ( timer ) { window.clearTimeout( timer ); timer = null; syncStop(); } } );
-		root.addEventListener( 'mouseleave', resume );
-		root.addEventListener( 'focusin', function () { if ( timer ) { window.clearTimeout( timer ); timer = null; syncStop(); } } );
-		root.addEventListener( 'focusout', function ( e ) { if ( ! root.contains( e.relatedTarget ) ) { resume(); } } );
-		function resume() { if ( opts.autoplay && ! userStopped && ! timer ) { start(); syncStop(); } }
+		// Pause on hover and focus (WCAG 2.2.2); resume only when neither hold
+		// is active and the user did not stop it. These holds are transient, so
+		// they never touch the stop/start button's visible state (syncStop is
+		// intentionally NOT called here).
+		var hoverHold = false;
+		var focusHold = false;
+		function hold() { if ( timer ) { window.clearTimeout( timer ); timer = null; } }
+		root.addEventListener( 'mouseenter', function () { hoverHold = true; hold(); } );
+		root.addEventListener( 'mouseleave', function () { hoverHold = false; resume(); } );
+		root.addEventListener( 'focusin', function () { focusHold = true; hold(); } );
+		root.addEventListener( 'focusout', function ( e ) { if ( ! root.contains( e.relatedTarget ) ) { focusHold = false; resume(); } } );
+		function resume() { if ( opts.autoplay && ! userStopped && ! hoverHold && ! focusHold && ! timer ) { start(); } }
 
 		// --- Touch (supplements buttons; never the only way) -----------------
 		var sx = null;
