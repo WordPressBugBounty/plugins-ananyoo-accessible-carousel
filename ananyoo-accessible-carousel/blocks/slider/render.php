@@ -110,6 +110,13 @@ if ( ! in_array( $anacb_dot_style, array( 'dots', 'titles' ), true ) ) {
 // enough to read its own text rather than a fixed interval.
 $anacb_auto_time = isset( $attributes['autoTime'] ) ? (bool) $attributes['autoTime'] : true;
 
+// Pause on mouse hover (on by default). Authors of full-width / full-height
+// carousels can turn it off, because there the mouse is nearly always over
+// the carousel and rotation would stay paused forever. Keyboard focus-pause
+// and the always-visible stop/start control are NOT affected by this option,
+// so WCAG 2.2.2 stays satisfied either way.
+$anacb_hover_pause = isset( $attributes['hoverPause'] ) ? (bool) $attributes['hoverPause'] : true;
+
 // Opt-in visitor modes (off by default): a "View as list" reading mode and a
 // dyslexia-friendly text toggle. Their scripts/styles do nothing unless on.
 $anacb_reading_mode = ! empty( $attributes['readingMode'] );
@@ -129,6 +136,7 @@ $anacb_wrapper_args = array(
 	'data-pause-size'     => $anacb_pause_size,
 	'data-dot-style'      => $anacb_dot_style,
 	'data-auto-time'      => $anacb_auto_time ? 'true' : 'false',
+	'data-hover-pause'    => $anacb_hover_pause ? 'true' : 'false',
 	'data-reading-mode'   => $anacb_reading_mode ? 'true' : 'false',
 	'data-dyslexia'       => $anacb_dyslexia ? 'true' : 'false',
 	'data-i18n-listview'      => __( 'View as list', 'ananyoo-accessible-carousel' ),

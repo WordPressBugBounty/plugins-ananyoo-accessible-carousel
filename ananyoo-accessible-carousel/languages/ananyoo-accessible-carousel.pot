@@ -618,3 +618,8 @@ msgstr ""
 msgid "Card text"
 msgstr ""
 
+msgid "Pause on mouse hover"
+msgstr ""
+
+msgid "On (recommended): auto-rotation pauses quietly while the mouse is over the carousel. Turn off for full-width or full-height carousels, where the mouse is nearly always over the slides and rotation would stay paused. Keyboard focus still pauses it, and the visible Pause button always works (WCAG 2.2.2)."
+msgstr ""

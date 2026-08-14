@@ -314,6 +314,12 @@
 						value: Math.round( a.interval / 1000 ),
 						onChange: function ( v ) { set( { interval: v * 1000 } ); }
 					} ),
+					a.autoplay && el( ToggleControl, {
+						label: __( 'Pause on mouse hover', 'ananyoo-accessible-carousel' ),
+						help: __( 'On (recommended): auto-rotation pauses quietly while the mouse is over the carousel. Turn off for full-width or full-height carousels, where the mouse is nearly always over the slides and rotation would stay paused. Keyboard focus still pauses it, and the visible Pause button always works (WCAG 2.2.2).', 'ananyoo-accessible-carousel' ),
+						checked: undefined === a.hoverPause ? true : a.hoverPause,
+						onChange: function ( v ) { set( { hoverPause: v } ); }
+					} ),
 					el( ToggleControl, {
 						label: __( 'Loop slides', 'ananyoo-accessible-carousel' ),
 						checked: a.loop,

@@ -40,6 +40,7 @@
 			dots:     root.getAttribute( 'data-dots' ) !== 'false',
 			dotStyle: root.getAttribute( 'data-dot-style' ) === 'titles' ? 'titles' : 'dots',
 			autoTime: root.getAttribute( 'data-auto-time' ) !== 'false',
+			hoverPause: root.getAttribute( 'data-hover-pause' ) !== 'false',
 			readingMode: root.getAttribute( 'data-reading-mode' ) === 'true',
 			dyslexia:    root.getAttribute( 'data-dyslexia' ) === 'true',
 			pausePos:  root.getAttribute( 'data-pause-position' ) || 'right',
@@ -296,11 +297,19 @@
 		// is active and the user did not stop it. These holds are transient, so
 		// they never touch the stop/start button's visible state (syncStop is
 		// intentionally NOT called here).
+		// The hover hold can be turned off per block (data-hover-pause="false")
+		// for full-width / full-height carousels where the mouse is nearly
+		// always over the carousel and rotation would stay paused forever.
+		// The FOCUS hold is always active: keyboard and switch users must
+		// never have content rotate away from under their focus. The
+		// always-visible stop/start control keeps WCAG 2.2.2 satisfied.
 		var hoverHold = false;
 		var focusHold = false;
 		function hold() { if ( timer ) { window.clearTimeout( timer ); timer = null; } }
-		root.addEventListener( 'mouseenter', function () { hoverHold = true; hold(); } );
-		root.addEventListener( 'mouseleave', function () { hoverHold = false; resume(); } );
+		if ( opts.hoverPause ) {
+			root.addEventListener( 'mouseenter', function () { hoverHold = true; hold(); } );
+			root.addEventListener( 'mouseleave', function () { hoverHold = false; resume(); } );
+		}
 		root.addEventListener( 'focusin', function () { focusHold = true; hold(); } );
 		root.addEventListener( 'focusout', function ( e ) { if ( ! root.contains( e.relatedTarget ) ) { focusHold = false; resume(); } } );
 		function resume() { if ( opts.autoplay && ! userStopped && ! hoverHold && ! focusHold && ! timer ) { start(); } }
