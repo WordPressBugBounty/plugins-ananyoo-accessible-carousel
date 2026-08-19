@@ -3,7 +3,7 @@
  * Plugin Name:       Accessible Carousel & Slider – WCAG AA Compliant Slideshow
  * Plugin URI:        https://ananyoo.com/ananyoo-accessible-carousel-block-plugin/
  * Description:        WCAG 2.2 AA compliant carousel, slider & slideshow blocks: keyboard & screen-reader friendly, pause control, no autoplay, plus a card scroller.
- * Version:           2.7.5
+ * Version:           2.9.0
  * Requires at least: 6.5
  * Requires PHP:      7.4
  * Author:            Shivaji Mitra (Ananyoo)
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // No direct file access.
 }
 
-define( 'ANACB_VERSION', '2.7.5' );
+define( 'ANACB_VERSION', '2.9.0' );
 define( 'ANACB_PATH', plugin_dir_path( __FILE__ ) );
 define( 'ANACB_URL', plugin_dir_url( __FILE__ ) );
 define( 'ANACB_BASENAME', plugin_basename( __FILE__ ) );
@@ -37,7 +37,7 @@ function anacb_register() {
 	wp_register_script(
 		'aac-editor',
 		ANACB_URL . 'assets/js/editor.js',
-		array( 'wp-blocks', 'wp-element', 'wp-block-editor', 'wp-components', 'wp-i18n', 'wp-data' ),
+		array( 'wp-blocks', 'wp-element', 'wp-block-editor', 'wp-components', 'wp-i18n', 'wp-data', 'wp-server-side-render' ),
 		ANACB_VERSION,
 		true
 	);
@@ -76,11 +76,18 @@ function anacb_register() {
 	register_block_type( ANACB_PATH . 'blocks/slide' );
 	register_block_type( ANACB_PATH . 'blocks/scroller' );
 	register_block_type( ANACB_PATH . 'blocks/card' );
+	register_block_type( ANACB_PATH . 'blocks/featured-products' );
 }
 add_action( 'init', 'anacb_register' );
 
 // --- Block patterns (ready-made templates) -------------------------------
 require_once ANACB_PATH . 'includes/patterns.php';
+
+// --- WooCommerce "Featured products" source ------------------------------
+// Adds the [ananyoo_featured_products] shortcode, which renders your featured
+// WooCommerce products inside the accessible card scroller. The file guards
+// itself when WooCommerce is not active, so it is safe to load unconditionally.
+require_once ANACB_PATH . 'includes/woocommerce-featured.php';
 
 // --- Admin: top-level menu, About/how-to page, branded block category and
 // Plugins-screen links. Loaded only in the admin (includes the block editor).

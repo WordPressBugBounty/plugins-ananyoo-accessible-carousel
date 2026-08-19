@@ -1,10 +1,10 @@
 === Accessible Carousel & Slider – WCAG AA Compliant Slideshow ===
 Contributors: anblik
-Tags: accessibility, wcag, carousel, slider, slideshow
+Tags: accessibility, wcag, carousel, slider, woocommerce
 Requires at least: 6.5
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 2.7.5
+Stable tag: 2.9.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,12 +12,13 @@ WCAG AA compliant carousel, slider & slideshow blocks: keyboard & screen-reader 
 
 == Description ==
 
-**Accessible Carousel & Slider** gives the WordPress block editor two accessibility-first blocks — a hero carousel / slider and a native card scroller — built to WCAG Level AA. Use it as an accessible carousel, slider, or slideshow that is fully keyboard-operable, screen-reader friendly, and responsive, with an always-visible pause control and no forced autoplay. Both are real Gutenberg blocks, so there are no shortcodes and nothing is hidden from assistive technology, plus ready-made patterns you can insert and edit.
+**Accessible Carousel & Slider** gives the WordPress block editor two accessibility-first blocks — a hero carousel / slider and a native card scroller — built to WCAG Level AA. Use it as an accessible carousel, slider, or slideshow that is fully keyboard-operable, screen-reader friendly, and responsive, with an always-visible pause control and no forced autoplay. Both are real Gutenberg blocks with ready-made patterns you can insert and edit, and nothing is hidden from assistive technology. If you run WooCommerce, a **Featured Products** block (and a matching `[ananyoo_featured_products]` shortcode) can pull the products you have marked *Featured* straight into either accessible layout — the card scroller or the hero carousel — with real titles, alt text, prices and a WCAG-safe category badge, no API key or configuration. The block adds per-element toggles, a description length limit, colour controls and a live in-editor contrast check.
 
 **Live demo:** [Try the accessible carousel & slider demo »](https://showcase.ananyoo.com/accessible-carousel/)
 
 **New in this version**
 
+* **Featured Products block (new in 2.9.0):** show your WooCommerce *Featured* products in either accessible layout — the **card scroller** or the **hero carousel** — and choose exactly what appears. Toggle the image, category badge, title, short description, price and "View" link on or off; set the **description length in words**; pick the order and how many to show; and choose the badge colour as **Auto (always WCAG-safe)** or **Custom with a live contrast check** that verifies your colour on the spot (WCAG 1.4.3). A matching `[ananyoo_featured_products]` shortcode is included for quick drop-in use. No API key, no configuration; existing blocks are unchanged.
 * An in-editor **Accessibility check** with a live WCAG colour-contrast pass/fail readout for every colour pair, plus alt-text, heading and button-text checks — so you catch problems while you build.
 * **Full keyboard control**: Left/Right arrow keys change slides and Home/End jump to the first/last slide.
 * Slide changes are **announced by title** to screen readers, not just "Item 2 of 5".
@@ -106,8 +107,27 @@ Yes. Slides display as a stacked, readable list when JavaScript is unavailable.
 7. New front-end options: a titled tab navigation, a visible "2 / 5" slide counter, a "Skip carousel" link, and the optional "View as list" and "Easier reading" visitor toggles.
 8. The plugin's own accessible "How to use" admin page: a keyboard- and screen-reader-friendly help screen with a visible focus ring, semantic headings and contrast-checked colours.
 9. The block-editor sidebar for the carousel: choose dots or a titled tab list, reading-time pacing, and the optional "View as list" and dyslexia-friendly reading toggles under "Accessibility options".
+10. WooCommerce "Featured products" shown in the accessible card scroller: each product is a card with its image, a contrast-checked category badge, the title, the price and a "View" link — keyboard- and screen-reader-friendly.
+11. The Featured Products block in the editor: the sidebar's per-element toggles, description length limit and badge colour, with the live Accessibility check reading "Contrast 5.7:1 — passes WCAG AA" for a custom badge colour.
+12. The same Featured products shown in the hero-carousel display — one product per slide, with a category badge, price and "View" link over a solid contrast box, plus dots and previous/next controls. Autoplay is off, so there is no motion.
 
 == Changelog ==
+
+= 2.9.0 =
+* New: **Featured Products block** (`anacb/featured-products`). Show your WooCommerce *Featured* products in EITHER accessible layout — the card scroller or the hero carousel — chosen per instance. Reuses the same keyboard operation, roving focus, forced-colors support and (for the carousel) skip link, live region and dots as the other blocks; only the source of the cards is WooCommerce.
+* New: full per-instance control — toggle the image, category badge, title, short description, price and "View" link on or off; set the description length in words; choose how many products, the order and a category filter; and pick the "View" control as a link or a button.
+* New: badge colour is **Auto** (always at least 4.5:1 with the badge text) or **Custom**, with a **live in-editor contrast readout** that verifies a custom colour against WCAG 1.4.3 on the spot — the same checker the other blocks use.
+* New: an optional section heading (text, level H2–H4 and intro), with the products region labelled by that heading for screen readers.
+* The `[ananyoo_featured_products]` shortcode gains the same options (`display`, `style`, per-element `show_*`, `subtitle_words`, `orderby`, `cta_style`, `badge_color`, `heading`, …) and now shares one renderer with the block, so both always produce identical markup.
+* Fix: product/scroller images now always crop to their card ratio (added `height:auto` so an image's own width/height attributes no longer override the CSS `aspect-ratio`), keeping every card the same height.
+* No breaking changes; all existing blocks and the 2.8.0 shortcode render exactly as before.
+
+= 2.8.0 =
+* New: WooCommerce "Featured products" source. The shortcode `[ananyoo_featured_products]` renders the products you have marked *Featured* as cards inside the accessible card scroller — reusing the same keyboard operation, roving focus, focus-moves-to-the-revealed-card behaviour and forced-colors support as the block. Nothing about the WCAG guarantees changes; only the source of the cards is WooCommerce.
+* Each product card carries a real title, the product image with the product name as alt text, an optional short description, the price, and a "View" link with hidden context so repeated links have distinct names (WCAG 2.4.4).
+* Category badge colours are chosen to always meet at least 4.5:1 contrast with white text (WCAG 1.4.3).
+* Attributes: `count` (default 8), `per_view` (1–6, default 3), `category` (optional slug filter), `subtitle` ("excerpt" | "category" | "none"), `show_price` ("yes" | "no"), `label`, `cta`. Safe no-op when WooCommerce is not active or no products are featured.
+* No breaking changes; all existing blocks render exactly as before.
 
 = 2.7.5 =
 * New: a "Pause on mouse hover" toggle in the Autoplay settings (on by default, so nothing changes for existing carousels). Turn it off for full-width or full-height hero carousels, where the mouse is nearly always over the slides and hover-pause would keep the rotation stopped. Requested by @tonfarbe.
@@ -277,6 +297,12 @@ Yes. Slides display as a stacked, readable list when JavaScript is unavailable.
 * Initial release.
 
 == Upgrade Notice ==
+
+= 2.9.0 =
+New Featured Products block: show your WooCommerce Featured products as an accessible card scroller or hero carousel, with per-element toggles, a description length limit and a live badge contrast check. Existing blocks and the shortcode are unchanged.
+
+= 2.8.0 =
+Optional WooCommerce support: the new [ananyoo_featured_products] shortcode shows your Featured products inside the accessible card scroller, with WCAG-safe category badges. Existing blocks and content are unchanged.
 
 = 2.5.6 =
 Adds a Settings link on the Plugins screen plus small readme and versioning tidy-ups. No changes to the blocks or your content.

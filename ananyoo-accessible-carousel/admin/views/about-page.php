@@ -106,6 +106,24 @@ $anacb_newtab = '<span class="screen-reader-text"> ' . esc_html__( '(opens in a 
 			</ul>
 		</section>
 
+		<section class="anacb-card" aria-labelledby="anacb-c-woo">
+			<h2 id="anacb-c-woo"><?php esc_html_e( 'WooCommerce featured products', 'ananyoo-accessible-carousel' ); ?></h2>
+			<p class="anacb-muted">
+				<?php esc_html_e( 'Running WooCommerce? The Featured Products block shows the products you have marked "Featured" inside your choice of accessible layout — the card scroller or the hero carousel — with the same keyboard, focus and screen-reader behaviour; only the cards come from your shop. Find it in the inserter under Ananyoo Accessible Blocks.', 'ananyoo-accessible-carousel' ); ?>
+			</p>
+			<ul>
+				<li><?php esc_html_e( 'Display as a card scroller or a one-at-a-time hero carousel (autoplay off, so there is no motion).', 'ananyoo-accessible-carousel' ); ?></li>
+				<li><?php esc_html_e( 'Toggle each element on or off — image, category badge, title, short description, price and the "View" link — and set the description length in words.', 'ananyoo-accessible-carousel' ); ?></li>
+				<li><?php esc_html_e( 'Badge colour is Auto (always at least 4.5:1 with the badge text) or Custom, with a LIVE contrast readout in the sidebar that verifies your colour on the spot (WCAG 1.4.3).', 'ananyoo-accessible-carousel' ); ?></li>
+				<li><?php esc_html_e( 'Each product image uses the product name as its alt text, and every "View" link carries distinct hidden context so repeated links stay unique (WCAG 2.4.4).', 'ananyoo-accessible-carousel' ); ?></li>
+				<li><?php esc_html_e( 'Shows nothing when WooCommerce is inactive or no products are featured, so it is safe to leave in place.', 'ananyoo-accessible-carousel' ); ?></li>
+			</ul>
+			<p class="anacb-muted">
+				<?php esc_html_e( 'Prefer a shortcode? The same options are available for quick drop-in use:', 'ananyoo-accessible-carousel' ); ?>
+			</p>
+			<p><span class="anacb-kbd">[ananyoo_featured_products display="scroller" count="8" per_view="3"]</span></p>
+		</section>
+
 		<section class="anacb-card" aria-labelledby="anacb-c-a11y">
 			<h2 id="anacb-c-a11y"><?php esc_html_e( 'Accessibility built in', 'ananyoo-accessible-carousel' ); ?></h2>
 			<ul>

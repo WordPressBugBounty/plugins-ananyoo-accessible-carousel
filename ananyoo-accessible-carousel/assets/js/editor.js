@@ -1020,4 +1020,246 @@
 		}
 	} );
 
+	/* =====================================================================
+	 * anacb/featured-products — WooCommerce "Featured products" in either
+	 * accessible component (card scroller or hero carousel).
+	 *
+	 * A dynamic block: PHP (render.php → anacb_render_featured) builds the
+	 * markup, and a ServerSideRender preview shows it live in the editor. The
+	 * sidebar gives per-element toggles, a description word-length limit, and a
+	 * LIVE badge contrast check (reusing the same WCAG helpers as the blocks
+	 * above) so a custom badge colour is verified on the spot (WCAG 1.4.3).
+	 * ===================================================================== */
+	var ServerSideRender = ( window.wp && window.wp.serverSideRender ) ? window.wp.serverSideRender : null;
+
+	blocks.registerBlockType( 'anacb/featured-products', {
+		edit: function ( props ) {
+			var a = props.attributes;
+			var set = props.setAttributes;
+			var blockProps = useBlockProps( { className: 'aac-featured--editor' } );
+
+			var isCarousel = ( 'carousel' === a.display );
+
+			// Style choices depend on the display mode.
+			var styleOptions = isCarousel
+				? [
+					{ label: __( 'Card (contrast box)', 'ananyoo-accessible-carousel' ), value: 'card' },
+					{ label: __( 'Overlay', 'ananyoo-accessible-carousel' ), value: 'overlay' }
+				]
+				: [
+					{ label: __( 'Editorial', 'ananyoo-accessible-carousel' ), value: 'editorial' },
+					{ label: __( 'Soft', 'ananyoo-accessible-carousel' ), value: 'soft' },
+					{ label: __( 'Minimal', 'ananyoo-accessible-carousel' ), value: 'minimal' }
+				];
+
+			function setDisplay( v ) {
+				var next = { display: v };
+				// Keep the style valid for the chosen mode.
+				if ( 'carousel' === v && [ 'card', 'overlay' ].indexOf( a.style ) === -1 ) { next.style = 'card'; }
+				if ( 'scroller' === v && [ 'editorial', 'soft', 'minimal' ].indexOf( a.style ) === -1 ) { next.style = 'editorial'; }
+				set( next );
+			}
+
+			// --- Layout panel ---
+			var layoutPanel = el( PanelBody, { title: __( 'Layout', 'ananyoo-accessible-carousel' ), initialOpen: true },
+				el( SelectControl, {
+					label: __( 'Display as', 'ananyoo-accessible-carousel' ),
+					value: a.display,
+					options: [
+						{ label: __( 'Card scroller (row of cards)', 'ananyoo-accessible-carousel' ), value: 'scroller' },
+						{ label: __( 'Hero carousel (one at a time)', 'ananyoo-accessible-carousel' ), value: 'carousel' }
+					],
+					help: isCarousel
+						? __( 'One product per slide. Autoplay is off, so there is no motion.', 'ananyoo-accessible-carousel' )
+						: __( 'A native scroll-snap row of product cards.', 'ananyoo-accessible-carousel' ),
+					onChange: setDisplay
+				} ),
+				el( SelectControl, {
+					label: __( 'Style', 'ananyoo-accessible-carousel' ),
+					value: a.style,
+					options: styleOptions,
+					onChange: function ( v ) { set( { style: v } ); }
+				} ),
+				el( RangeControl, {
+					label: __( 'Products to show', 'ananyoo-accessible-carousel' ),
+					value: a.count, min: 1, max: 24,
+					onChange: function ( v ) { set( { count: v } ); }
+				} ),
+				! isCarousel && el( RangeControl, {
+					label: __( 'Columns per view', 'ananyoo-accessible-carousel' ),
+					value: a.perView, min: 1, max: 6,
+					help: __( 'Desktop columns. Tablet steps down to 2 and mobile to 1 automatically.', 'ananyoo-accessible-carousel' ),
+					onChange: function ( v ) { set( { perView: v } ); }
+				} ),
+				el( TextControl, {
+					label: __( 'Category slug (optional)', 'ananyoo-accessible-carousel' ),
+					value: a.category,
+					help: __( 'Leave blank for all featured products. Example: magazines', 'ananyoo-accessible-carousel' ),
+					onChange: function ( v ) { set( { category: v } ); }
+				} ),
+				el( SelectControl, {
+					label: __( 'Order', 'ananyoo-accessible-carousel' ),
+					value: a.orderby,
+					options: [
+						{ label: __( 'Newest first', 'ananyoo-accessible-carousel' ), value: 'date' },
+						{ label: __( 'Menu order', 'ananyoo-accessible-carousel' ), value: 'menu_order' },
+						{ label: __( 'Title (A–Z)', 'ananyoo-accessible-carousel' ), value: 'title' }
+					],
+					onChange: function ( v ) { set( { orderby: v } ); }
+				} )
+			);
+
+			// --- Section heading panel ---
+			var headerPanel = el( PanelBody, { title: __( 'Section heading', 'ananyoo-accessible-carousel' ), initialOpen: false },
+				el( ToggleControl, {
+					label: __( 'Show a visible heading', 'ananyoo-accessible-carousel' ),
+					checked: a.showHeading,
+					onChange: function ( v ) { set( { showHeading: v } ); }
+				} ),
+				a.showHeading && el( TextControl, {
+					label: __( 'Heading text', 'ananyoo-accessible-carousel' ),
+					value: a.heading,
+					onChange: function ( v ) { set( { heading: v } ); }
+				} ),
+				a.showHeading && el( SelectControl, {
+					label: __( 'Heading level', 'ananyoo-accessible-carousel' ),
+					value: String( a.headingLevel ),
+					options: [
+						{ label: 'H2', value: '2' },
+						{ label: 'H3', value: '3' },
+						{ label: 'H4', value: '4' }
+					],
+					help: __( 'Pick the level that fits this page outline (WCAG 1.3.1).', 'ananyoo-accessible-carousel' ),
+					onChange: function ( v ) { set( { headingLevel: parseInt( v, 10 ) } ); }
+				} ),
+				a.showHeading && el( TextControl, {
+					label: __( 'Intro text (optional)', 'ananyoo-accessible-carousel' ),
+					value: a.intro,
+					onChange: function ( v ) { set( { intro: v } ); }
+				} ),
+				! a.showHeading && el( TextControl, {
+					label: __( 'Accessible section name', 'ananyoo-accessible-carousel' ),
+					value: a.label,
+					help: __( 'Used as the screen-reader name for the region when no visible heading is shown.', 'ananyoo-accessible-carousel' ),
+					onChange: function ( v ) { set( { label: v } ); }
+				} )
+			);
+
+			// --- Elements panel ---
+			var elementsPanel = el( PanelBody, { title: __( 'Show on each card', 'ananyoo-accessible-carousel' ), initialOpen: false },
+				el( ToggleControl, { label: __( 'Image', 'ananyoo-accessible-carousel' ), checked: a.showImage, onChange: function ( v ) { set( { showImage: v } ); } } ),
+				el( ToggleControl, { label: __( 'Category badge', 'ananyoo-accessible-carousel' ), checked: a.showBadge, onChange: function ( v ) { set( { showBadge: v } ); } } ),
+				el( ToggleControl, {
+					label: __( 'Title', 'ananyoo-accessible-carousel' ),
+					checked: a.showTitle,
+					help: __( 'When off, the title is hidden visually but kept for screen readers, so each card still has a name.', 'ananyoo-accessible-carousel' ),
+					onChange: function ( v ) { set( { showTitle: v } ); }
+				} ),
+				el( ToggleControl, { label: __( 'Short description', 'ananyoo-accessible-carousel' ), checked: a.showSubtitle, onChange: function ( v ) { set( { showSubtitle: v } ); } } ),
+				a.showSubtitle && el( SelectControl, {
+					label: __( 'Description source', 'ananyoo-accessible-carousel' ),
+					value: a.subtitleSource,
+					options: [
+						{ label: __( 'Short description', 'ananyoo-accessible-carousel' ), value: 'excerpt' },
+						{ label: __( 'Category name', 'ananyoo-accessible-carousel' ), value: 'category' }
+					],
+					onChange: function ( v ) { set( { subtitleSource: v } ); }
+				} ),
+				a.showSubtitle && 'excerpt' === a.subtitleSource && el( RangeControl, {
+					label: __( 'Description length (words)', 'ananyoo-accessible-carousel' ),
+					value: a.subtitleWords, min: 5, max: 60,
+					help: __( 'Longer descriptions are trimmed to this many words.', 'ananyoo-accessible-carousel' ),
+					onChange: function ( v ) { set( { subtitleWords: v } ); }
+				} ),
+				el( ToggleControl, { label: __( 'Price', 'ananyoo-accessible-carousel' ), checked: a.showPrice, onChange: function ( v ) { set( { showPrice: v } ); } } ),
+				el( ToggleControl, { label: __( '“View” link', 'ananyoo-accessible-carousel' ), checked: a.showCta, onChange: function ( v ) { set( { showCta: v } ); } } ),
+				a.showCta && el( TextControl, { label: __( 'Link text', 'ananyoo-accessible-carousel' ), value: a.ctaText, onChange: function ( v ) { set( { ctaText: v } ); } } ),
+				a.showCta && el( SelectControl, {
+					label: __( 'Link style', 'ananyoo-accessible-carousel' ),
+					value: a.ctaStyle,
+					options: [
+						{ label: __( 'Text link', 'ananyoo-accessible-carousel' ), value: 'link' },
+						{ label: __( 'Button', 'ananyoo-accessible-carousel' ), value: 'button' }
+					],
+					help: __( 'A button keeps a 44px target and the same accessible text.', 'ananyoo-accessible-carousel' ),
+					onChange: function ( v ) { set( { ctaStyle: v } ); }
+				} )
+			);
+
+			// --- Badge colour panel ---
+			var badgePanel = el( PanelBody, { title: __( 'Category badge colour', 'ananyoo-accessible-carousel' ), initialOpen: false },
+				el( SelectControl, {
+					label: __( 'Badge colour', 'ananyoo-accessible-carousel' ),
+					value: a.badgeMode,
+					options: [
+						{ label: __( 'Auto (always WCAG-safe)', 'ananyoo-accessible-carousel' ), value: 'auto' },
+						{ label: __( 'Custom', 'ananyoo-accessible-carousel' ), value: 'custom' }
+					],
+					help: __( 'Auto picks a colour that always passes 4.5:1 with the badge text. Custom lets you choose — the check below verifies it on the spot.', 'ananyoo-accessible-carousel' ),
+					onChange: function ( v ) { set( { badgeMode: v } ); }
+				} )
+			);
+
+			var badgeColors = ( 'custom' === a.badgeMode ) && el( PanelColorSettings, {
+				title: __( 'Badge colours', 'ananyoo-accessible-carousel' ),
+				initialOpen: true,
+				colorSettings: [
+					{ value: a.badgeBg, onChange: function ( v ) { set( { badgeBg: v || '' } ); }, label: __( 'Badge background', 'ananyoo-accessible-carousel' ) },
+					{ value: a.badgeText, onChange: function ( v ) { set( { badgeText: v || '#ffffff' } ); }, label: __( 'Badge text', 'ananyoo-accessible-carousel' ) }
+				]
+			}, el( 'p', { style: { fontSize: '12px', fontStyle: 'italic', margin: 0 } },
+				__( 'The live contrast result appears in the Accessibility check panel below (WCAG 1.4.3).', 'ananyoo-accessible-carousel' )
+			) );
+
+			// --- Accessibility check rows ---
+			var rows = [];
+			if ( 'custom' === a.badgeMode ) {
+				rows.push( contrastRow( __( 'Badge text on badge colour', 'ananyoo-accessible-carousel' ), a.badgeText || '#ffffff', a.badgeBg || '', 4.5 ) );
+			} else {
+				rows.push( a11yRow( true, __( 'Category badge colour', 'ananyoo-accessible-carousel' ), __( 'Auto — always at least 4.5:1 with the badge text (WCAG 1.4.3).', 'ananyoo-accessible-carousel' ) ) );
+			}
+			if ( ! a.showTitle ) {
+				rows.push( a11yRow( true, __( 'Product title', 'ananyoo-accessible-carousel' ), __( 'Hidden from view but kept for screen readers, so every card still has a name (WCAG 2.4.6).', 'ananyoo-accessible-carousel' ) ) );
+			}
+			if ( a.showImage ) {
+				rows.push( a11yRow( true, __( 'Product images', 'ananyoo-accessible-carousel' ), __( 'Each image uses the product name as its alt text (WCAG 1.1.1).', 'ananyoo-accessible-carousel' ) ) );
+			}
+			if ( a.showCta ) {
+				rows.push( a11yRow( true, __( '“View” links', 'ananyoo-accessible-carousel' ), __( 'Each link adds the product name as hidden context, so repeated links stay distinct (WCAG 2.4.4).', 'ananyoo-accessible-carousel' ) ) );
+				if ( vagueLink( a.ctaText ) ) {
+					rows.push( a11yRow( true, __( 'Link text', 'ananyoo-accessible-carousel' ), __( 'Tip: a specific word reads better than a vague one — though the product name is already added for screen readers.', 'ananyoo-accessible-carousel' ) ) );
+				}
+			}
+			if ( isCarousel ) {
+				rows.push( a11yRow( true, __( 'Hero carousel', 'ananyoo-accessible-carousel' ), __( 'Autoplay is off, so there is no motion. Full keyboard support, slide dots and a “Skip carousel” link are included.', 'ananyoo-accessible-carousel' ) ) );
+			} else {
+				rows.push( a11yRow( true, __( 'Card scroller', 'ananyoo-accessible-carousel' ), __( 'Native scroll-snap; Previous / Next appear only when cards overflow, and focus follows the revealed card.', 'ananyoo-accessible-carousel' ) ) );
+			}
+
+			var inspector = el( InspectorControls, null,
+				layoutPanel, headerPanel, elementsPanel, badgePanel, badgeColors, a11yPanel( rows )
+			);
+
+			// --- Live preview (PHP-rendered) ---
+			var preview;
+			if ( ServerSideRender ) {
+				preview = el( ServerSideRender, {
+					block: 'anacb/featured-products',
+					attributes: a,
+					httpMethod: 'POST'
+				} );
+			} else {
+				preview = el( 'p', { style: { padding: '1rem', border: '1px dashed #c3c4c7', borderRadius: '8px' } },
+					__( 'Featured Products — preview appears on the front end.', 'ananyoo-accessible-carousel' ) );
+			}
+
+			return el( Fragment, null, inspector, el( 'div', blockProps, preview ) );
+		},
+
+		// Dynamic block: PHP render.php builds the markup from attributes.
+		save: function () {
+			return null;
+		}
+	} );
+
 } )( window.wp.blocks, window.wp.blockEditor, window.wp.components, window.wp.element, window.wp.i18n, window.wp.data );
