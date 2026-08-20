@@ -321,27 +321,26 @@ function anacb_pf_render_scroller( $products, $c, $region_lbl ) {
 						$heading_class .= ' aac-visually-hidden';
 					}
 					?>
-					<li class="aac-scroller__card aac-scroller__card--product" tabindex="-1" aria-labelledby="<?php echo esc_attr( $label_ids ); ?>">
+					<li class="aac-scroller__card aac-scroller__card--product aac-pf-card" tabindex="-1">
 						<?php if ( '' !== $img_html || anacb_pf_badge( $f, $c ) ) : ?>
 							<span class="aac-pf-media">
 								<?php echo $img_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built with wp_get_attachment_image()/esc_url() above. ?>
 								<?php echo anacb_pf_badge( $f, $c ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in anacb_pf_badge(). ?>
 							</span>
 						<?php endif; ?>
-						<div class="aac-scroller__body">
-							<h3 class="<?php echo esc_attr( $heading_class ); ?>" id="<?php echo esc_attr( $hid ); ?>"><?php echo esc_html( $f['name'] ); ?></h3>
+						<div class="aac-scroller__body aac-pf-overlay">
+							<h3 class="<?php echo esc_attr( $heading_class ); ?>" id="<?php echo esc_attr( $hid ); ?>">
+								<?php if ( '' !== $f['url'] ) : ?>
+									<a class="aac-pf-cardlink" href="<?php echo esc_url( $f['url'] ); ?>"><?php echo esc_html( $f['name'] ); ?></a>
+								<?php else : ?>
+									<?php echo esc_html( $f['name'] ); ?>
+								<?php endif; ?>
+							</h3>
 							<?php if ( '' !== $f['sub'] ) : ?>
 								<p class="aac-scroller__text" id="<?php echo esc_attr( $tid ); ?>"><?php echo esc_html( $f['sub'] ); ?></p>
 							<?php endif; ?>
 							<?php if ( '' !== $f['price'] ) : ?>
 								<p class="aac-pf-price"><?php echo wp_kses_post( $f['price'] ); ?></p>
-							<?php endif; ?>
-							<?php if ( $c['show_cta'] ) : ?>
-								<a class="<?php echo esc_attr( $cta_class ); ?>" href="<?php echo esc_url( $f['url'] ); ?>">
-									<?php echo esc_html( $c['cta'] ); ?>
-									<span class="aac-visually-hidden"><?php echo esc_html( ' – ' . $f['name'] ); ?></span>
-									<span class="aac-scroller__arrow" aria-hidden="true">&rarr;</span>
-								</a>
 							<?php endif; ?>
 						</div>
 					</li>

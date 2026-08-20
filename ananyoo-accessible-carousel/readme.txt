@@ -4,7 +4,7 @@ Tags: accessibility, wcag, carousel, slider, woocommerce
 Requires at least: 6.5
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 2.9.0
+Stable tag: 2.9.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -112,6 +112,16 @@ Yes. Slides display as a stacked, readable list when JavaScript is unavailable.
 12. The same Featured products shown in the hero-carousel display — one product per slide, with a category badge, price and "View" link over a solid contrast box, plus dots and previous/next controls. Autoplay is off, so there is no motion.
 
 == Changelog ==
+
+= 2.9.3 =
+* Fix: Featured Products cards could collapse to zero height (the section looked empty) because the full-cover cover image is positioned absolutely and left the card with no height of its own. Cards now use a fixed 3:4 portrait ratio, so every book / magazine cover shows at a consistent height.
+* Fix: a full-bleed section using "width: 100vw" includes the vertical scrollbar's width, which pushed the page ~15px wider and showed an unwanted horizontal scrollbar at the bottom of the window. The root element is now clipped on the X axis, removing that phantom scrollbar without affecting vertical scroll or sticky headers.
+
+= 2.9.2 =
+* Featured Products: new full-cover card design — the product cover fills the card and the title (now a clickable link to the product) and price sit over a WCAG-safe dark band at the bottom. The whole card is clickable; only the title is the link, so screen readers announce a clean product name. Covers show from the top so book/magazine titles stay visible.
+
+= 2.9.1 =
+* Fix: the card scroller could push a page-level horizontal scrollbar in some full-site-editing / flow layouts when many cards were shown. The scroller now contains its horizontal overflow to the component (`overflow-x: clip` on `.aac-scroller`); the viewport still scrolls on its own axis and the previous/next controls are unaffected.
 
 = 2.9.0 =
 * New: **Featured Products block** (`anacb/featured-products`). Show your WooCommerce *Featured* products in EITHER accessible layout — the card scroller or the hero carousel — chosen per instance. Reuses the same keyboard operation, roving focus, forced-colors support and (for the carousel) skip link, live region and dots as the other blocks; only the source of the cards is WooCommerce.
@@ -297,6 +307,9 @@ Yes. Slides display as a stacked, readable list when JavaScript is unavailable.
 * Initial release.
 
 == Upgrade Notice ==
+
+= 2.9.1 =
+Fixes a page-level horizontal scrollbar that could appear with the card scroller in some block-theme layouts. Recommended for anyone using the scroller or Featured Products block.
 
 = 2.9.0 =
 New Featured Products block: show your WooCommerce Featured products as an accessible card scroller or hero carousel, with per-element toggles, a description length limit and a live badge contrast check. Existing blocks and the shortcode are unchanged.
